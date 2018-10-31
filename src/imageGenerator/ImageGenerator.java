@@ -47,7 +47,7 @@ public class ImageGenerator {
 				float srcY = fy * source.getHeight();
 				
 				// Uzimamo bilinearni uzorak i upisujemo ga u jedan raster
-				Util.bilSampleA(source, srcX, srcY, rgb);
+				Util.pointSample(source, srcX, srcY, rgb);
 				targetBil.setPixel(x, y, rgb);
 			}
 		}
