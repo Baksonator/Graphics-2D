@@ -1,6 +1,7 @@
 package imageGenerator;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 
@@ -46,7 +47,7 @@ public class ImageGenerator {
 				float srcY = fy * source.getHeight();
 				
 				// Uzimamo bilinearni uzorak i upisujemo ga u jedan raster
-				Util.pointSample(source, srcX, srcY, rgb);
+				Util.bilSampleA(source, srcX, srcY, rgb);
 				targetBil.setPixel(x, y, rgb);
 			}
 		}
@@ -72,6 +73,17 @@ public class ImageGenerator {
 		g.dispose();
 		
 		return tile;
+	}
+	
+	public static BufferedImage scaleImageJava(BufferedImage source, int scaleW, int scaleH) {
+		
+		BufferedImage output = new BufferedImage(scaleW, scaleH, source.getType());
+		
+		Graphics2D g2d = output.createGraphics();
+		g2d.drawImage(source, 0, 0, scaleW, scaleH, null);
+		g2d.dispose();
+		
+		return output;
 	}
 
 }

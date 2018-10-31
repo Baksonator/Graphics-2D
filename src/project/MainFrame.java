@@ -26,9 +26,9 @@ public class MainFrame extends GameFrame {
 		mapa = new Tilemap();
 		
 		heroSheet = new SpriteSheet("tileset/characterTemporary.png", 10, 4);
-		heroSheet.setOffsets(64, 64);
+		heroSheet.setOffsets(32, 64);
 		
-		heroj = new AnimatedEntity(heroSheet, 352, 272);
+		heroj = new AnimatedEntity(heroSheet, 336, 272);
 		
 		startThread();
 	}
