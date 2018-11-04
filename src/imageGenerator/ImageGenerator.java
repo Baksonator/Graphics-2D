@@ -1,10 +1,14 @@
 package imageGenerator;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.util.Random;
 
+import rafgfxlib.ImageViewer;
 import rafgfxlib.Util;
 
 /**
@@ -85,5 +89,122 @@ public class ImageGenerator {
 		
 		return output;
 	}
+	
+	public static BufferedImage joinBufferedImage(BufferedImage img1, BufferedImage img2) {
 
+        //do some calculate first
+        int wid = img1.getWidth()+img2.getWidth();
+        int height = Math.max(img1.getHeight(),img2.getHeight());
+        //create a new buffer and draw two image into the new image
+        BufferedImage newImage = new BufferedImage(wid,height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = newImage.createGraphics();
+        Color oldColor = g2.getColor();
+        //fill background
+        g2.setPaint(Color.WHITE);
+        g2.fillRect(0, 0, wid, height);
+        //draw image
+        g2.setColor(oldColor);
+        g2.drawImage(img1, null, 0, 0);
+        g2.drawImage(img2, null, img1.getWidth(), 0);
+        g2.dispose();
+        return newImage;
+    }
+
+	public static BufferedImage joinBufferedImageArray(BufferedImage[] arrayImg) {
+
+        //do some calculate first
+        int wid = 0;
+        int height = 0;
+        for (int i = 0; i < arrayImg.length; i++) {
+        	wid += arrayImg[i].getWidth();
+        	if (height < arrayImg[i].getHeight()) {
+        		height = arrayImg[i].getHeight();
+        	}
+        }
+        //create a new buffer and draw two image into the new image
+        BufferedImage newImage = new BufferedImage(wid,height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = newImage.createGraphics();
+        //fill background
+        g2.setComposite(AlphaComposite.Clear);
+        g2.fillRect(0, 0, wid, height);
+        //draw image
+        g2.setComposite(AlphaComposite.Src);
+        for (int i = 0; i < arrayImg.length; i++) {
+        	g2.drawImage(arrayImg[i], null, arrayImg[i].getWidth() * i, 0);
+        }
+        g2.dispose();
+        return newImage;
+    }
+	
+	public static BufferedImage joinBufferedImageArrayVertical(BufferedImage[] arrayImg) {
+
+        //do some calculate first
+        int wid = 0;
+        int height = 0;
+        for (int i = 0; i < arrayImg.length; i++) {
+        	height += arrayImg[i].getHeight();
+        	if (wid < arrayImg[i].getWidth()) {
+        		wid = arrayImg[i].getWidth();
+        	}
+        }
+        //create a new buffer and draw two image into the new image
+        BufferedImage newImage = new BufferedImage(wid,height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = newImage.createGraphics();
+        //fill background
+        g2.setComposite(AlphaComposite.Clear);
+        g2.fillRect(0, 0, wid, height);
+        //draw image
+        g2.setComposite(AlphaComposite.Src);
+        for (int i = 0; i < arrayImg.length; i++) {
+        	g2.drawImage(arrayImg[i], null, 0, arrayImg[i].getHeight() * i);
+        }
+        g2.dispose();
+        return newImage;
+    }
+	
+	public static BufferedImage joinBufferedImageArrayVerticalCentered(BufferedImage[] arrayImg) {
+
+        //do some calculate first
+        int wid = 0;
+        int height = 0;
+        int offset[] = new int[arrayImg.clone().length];
+        for (int i = 0; i < arrayImg.length; i++) {
+        	height += arrayImg[i].getHeight();
+        	if (wid < arrayImg[i].getWidth()) {
+        		wid = arrayImg[i].getWidth();
+        	}
+        }
+        for (int i = 0; i < arrayImg.length; i++) {
+        	offset[i] = (wid - arrayImg[i].getWidth()) / 2;
+        }
+        //create a new buffer and draw two image into the new image
+        BufferedImage newImage = new BufferedImage(wid,height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = newImage.createGraphics();
+        //fill background
+        g2.setComposite(AlphaComposite.Clear);
+        g2.fillRect(0, 0, wid, height);
+        //draw image
+        g2.setComposite(AlphaComposite.Src);
+        for (int i = 0; i < arrayImg.length; i++) {
+        	g2.drawImage(arrayImg[i], null, offset[i], arrayImg[i].getHeight() * i);
+        }
+        g2.dispose();
+        return newImage;
+    }
+	
+	public static BufferedImage promeniBoju(BufferedImage source, Color color) {
+		int w = source.getWidth();
+        int h = source.getHeight();
+        BufferedImage dyed = new BufferedImage(w,h,BufferedImage.TYPE_INT_ARGB);
+        
+        Graphics2D g = dyed.createGraphics();
+        g.drawImage(source, 0,0, null);
+        g.setComposite(AlphaComposite.SrcAtop);
+        g.setColor(color);
+        g.fillRect(0,0,w,h);
+        g.dispose();
+        
+        return dyed;
+	}
+	
 }
