@@ -5,10 +5,12 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
-import rafgfxlib.GameFrame;
+import rafgfxlib.GameHost;
+import rafgfxlib.GameHost.GFMouseButton;
+import rafgfxlib.GameState;
 import rafgfxlib.Util;
 
-public class MainFrame extends GameFrame {
+public class MainFrame extends GameState {
 
 	private Tilemap mapa;
 	
@@ -35,14 +37,15 @@ public class MainFrame extends GameFrame {
 	private int screenHeight;
 	private BufferedImage noise;
 	
-	public MainFrame() {
+	public MainFrame(GameHost host) {
 		
-		super("BANTer", 1080, 720);
+//		super("BANTer", 1080, 720);
+		super(host);
 		
 		screenHeight = 720;
 		screenWidth = 1080;
 		
-		setUpdateRate(60);
+//		setUpdateRate(60);
 		
 		mapa = new Tilemap();
 		
@@ -61,10 +64,8 @@ public class MainFrame extends GameFrame {
 		pausedArray[3] = Util.loadImage("tileset/fontset/ExitGameRed.png");
 		noise = Util.loadImage("tileset/Noise.png");
 		
-		startThread();
+//		startThread();
 	}
-
-	private static final long serialVersionUID = -7327351674628534737L;
 
 	@Override
 	public void handleKeyDown(int keyCode) {
@@ -149,18 +150,6 @@ public class MainFrame extends GameFrame {
 		
 	}
 
-	@Override
-	public void handleWindowDestroy() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void handleWindowInit() {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	public void renderIntro(Graphics2D g, int sw, int sh) {
 		g.setPaint(Color.WHITE);
 		g.fillRect(0, 0, sw, sh);
@@ -221,9 +210,9 @@ public class MainFrame extends GameFrame {
 		}
 		
 		int x0 = mapa.getCamX() / Tilemap.TILE_W;
-		int x1 = x0 + (getWidth() / Tilemap.TILE_W) + 1;
+		int x1 = x0 + (host.getWidth() / Tilemap.TILE_W) + 1;
 		int y0 = mapa.getCamY() / Tilemap.TILE_H;
-		int y1 = y0 + (getHeight() / Tilemap.TILE_H) + 1;
+		int y1 = y0 + (host.getHeight() / Tilemap.TILE_H) + 1;
 		
 		if(x0 < 0) x0 = 0;
 		if(y0 < 0) y0 = 0;
@@ -252,24 +241,47 @@ public class MainFrame extends GameFrame {
 
 	@Override
 	public void update() {
-		if(isKeyDown(KeyEvent.VK_LEFT)) {
+		if(host.isKeyDown(KeyEvent.VK_LEFT)) {
 			mapa.setCamX(mapa.getCamX() - 10);
 		}
-		else if(isKeyDown(KeyEvent.VK_RIGHT)) {
+		else if(host.isKeyDown(KeyEvent.VK_RIGHT)) {
 			mapa.setCamX(mapa.getCamX() + 10);
 		}
-		else if(isKeyDown(KeyEvent.VK_UP)) {
+		else if(host.isKeyDown(KeyEvent.VK_UP)) {
 			mapa.setCamY(mapa.getCamY() - 10);
 		}
-		else if(isKeyDown(KeyEvent.VK_DOWN)) {
+		else if(host.isKeyDown(KeyEvent.VK_DOWN)) {
 			mapa.setCamY(mapa.getCamY() + 10);
 		}
 		
 		heroj.update();
 	}
 
-	public static void main(String[] args) {
-		GameFrame gf = new MainFrame();
-		gf.initGameWindow();
+//	public static void main(String[] args) {
+////		GameFrame gf = new MainFrame();
+////		gf.initGameWindow();
+//	}
+
+	@Override
+	public String getName() {
+		return "mainFrame";
+	}
+
+	@Override
+	public boolean handleWindowClose() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void resumeState() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void suspendState() {
+		// TODO Auto-generated method stub
+		
 	}
 }
