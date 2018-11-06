@@ -16,7 +16,14 @@ import rafgfxlib.Util;
 public class GeneratorMain {
 
 	public static void main(String[] args) {
-		kreirajNoise();
+		BufferedImage skalirana = ImageGenerator.scaleImageJava(Util.loadImage("spaceart/png/meteorSmall.png"), 
+				20, 20);
+		File outputFile = new File("spaceart/png/meteorMinor.png");
+		try {
+			ImageIO.write(skalirana, "png", outputFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void cutAndScaleArray() {

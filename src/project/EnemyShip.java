@@ -3,23 +3,22 @@ package project;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-public class HeroShip {
+public class EnemyShip {
 
 	private int posX;
 	private int posY;
 	private int health;
-	private int livesLeft;
 	private BufferedImage image;
-	private boolean isDamaged = false;
 	private int maxLeft;
 	private int maxRight;
+	private boolean isDead;
 	
-	public HeroShip(BufferedImage image, int maxLeft, int maxRight) {
+	public EnemyShip(BufferedImage image, int maxLeft, int maxRight) {
 		this.image = image;
 		this.maxLeft = maxLeft;
 		this.maxRight = maxRight;
-		health = 10;
-		livesLeft = 3;
+		health = 3;
+		isDead = true;
 	}
 	
 	public Rectangle getBounds() {
@@ -32,9 +31,6 @@ public class HeroShip {
 	}
 
 	public void setPosX(int posX) {
-		if (posX <= maxLeft || posX >= maxRight) {
-			return;
-		}
 		this.posX = posX;
 	}
 
@@ -52,17 +48,9 @@ public class HeroShip {
 
 	public void setHealth(int health) {
 		this.health = health;
-		if (this.health <= 4) {
-			isDamaged = true;
+		if (this.health <= 0) {
+			isDead = true;
 		}
-	}
-
-	public int getLivesLeft() {
-		return livesLeft;
-	}
-
-	public void setLivesLeft(int livesLeft) {
-		this.livesLeft = livesLeft;
 	}
 
 	public BufferedImage getImage() {
@@ -73,12 +61,28 @@ public class HeroShip {
 		this.image = image;
 	}
 
-	public boolean isDamaged() {
-		return isDamaged;
+	public int getMaxLeft() {
+		return maxLeft;
 	}
 
-	public void setDamaged(boolean isDamaged) {
-		this.isDamaged = isDamaged;
+	public void setMaxLeft(int maxLeft) {
+		this.maxLeft = maxLeft;
+	}
+
+	public int getMaxRight() {
+		return maxRight;
+	}
+
+	public void setMaxRight(int maxRight) {
+		this.maxRight = maxRight;
+	}
+
+	public boolean isDead() {
+		return isDead;
+	}
+
+	public void setDead(boolean isDead) {
+		this.isDead = isDead;
 	}
 	
 }

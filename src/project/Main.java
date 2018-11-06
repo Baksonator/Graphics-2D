@@ -17,9 +17,9 @@ public class Main {
 //		new GuitarHeroFrame(host);
 		new SnakeFrame(host);
 		
-//		host.setState("chickenFrame");
+		host.setState("chickenFrame");
 //		host.setState("GuitarHeroFrame");
-		host.setState("SnakeFrame");
+//		host.setState("SnakeFrame");
 	}
 
 }

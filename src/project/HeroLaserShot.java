@@ -2,23 +2,16 @@ package project;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.Random;
 
-public class Meteor {
+public class HeroLaserShot {
 
 	private int posX;
 	private int posY;
 	private BufferedImage image;
-	private int coolDown;
-	private int moveX;
-	private int moveY;
+	private boolean isRendered = false;
 	
-	public Meteor(BufferedImage image, int maxWidth) {
+	public HeroLaserShot(BufferedImage image) {
 		this.image = image;
-		Random r = new Random();
-		coolDown = (r.nextInt(30) + 1) * 61;
-		posX = r.nextInt(maxWidth);
-		posY = -image.getHeight() / 2;
 	}
 	
 	public Rectangle getBounds() {
@@ -50,28 +43,12 @@ public class Meteor {
 		this.image = image;
 	}
 
-	public int getCoolDown() {
-		return coolDown;
+	public boolean isRendered() {
+		return isRendered;
 	}
 
-	public void setCoolDown(int coolDown) {
-		this.coolDown = coolDown;
-	}
-
-	public int getMoveX() {
-		return moveX;
-	}
-
-	public void setMoveX(int moveX) {
-		this.moveX = moveX;
-	}
-
-	public int getMoveY() {
-		return moveY;
-	}
-
-	public void setMoveY(int moveY) {
-		this.moveY = moveY;
+	public void setRendered(boolean isRendered) {
+		this.isRendered = isRendered;
 	}
 	
 }
