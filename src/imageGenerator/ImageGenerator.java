@@ -30,6 +30,7 @@ public class ImageGenerator {
 		WritableRaster source = sourceImage.getRaster();
 		
 		WritableRaster targetBil = Util.createRaster(scaleW, scaleH, false);
+		System.out.println("scalew " + scaleW + ", scaleH " + scaleH);
 		
 		int rgb[] = new int[4];
 		
