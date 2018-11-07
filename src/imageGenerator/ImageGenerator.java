@@ -30,21 +30,20 @@ public class ImageGenerator {
 		WritableRaster source = sourceImage.getRaster();
 		
 		WritableRaster targetBil = Util.createRaster(scaleW, scaleH, false);
-		System.out.println("scalew " + scaleW + ", scaleH " + scaleH);
 		
 		int rgb[] = new int[4];
 		
 		// Petlje su postavljene da prodju sve piksele ciljne slike, gdje cemo
 		// za svaki takav da na osnovu izvorne slike odredimo adekvanu boju
-		for(int y = 0; y < scaleW; y++)
+		for(int y = 0; y < scaleH; y++)
 		{
 			// Izracunavamo 0 - 1 faktor trenutne Y koordinate u odnosu na visinu  
-			float fy = (float)y / scaleW;
+			float fy = (float)y / scaleH;
 			
-			for(int x = 0; x < scaleH; x++)
+			for(int x = 0; x < scaleW; x++)
 			{
 				// Izracunavamo 0 - 1 faktor trenutne X koordinate u odnosu na sirinu  
-				float fx = (float)x / scaleH;
+				float fx = (float)x / scaleW;
 				
 				// Jednostavnom proporcijom dobijamo koordinate "prevedene" 
 				// u prostor originalne slike, koje mogu biti decimalne

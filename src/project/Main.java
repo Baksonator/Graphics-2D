@@ -14,11 +14,11 @@ public class Main {
 		
 		new MainFrame(host);
 		new ChickenInvaderFrame(host);
-//		new GuitarHeroFrame(host);
+		new GuitarHeroFrame(host);
 		new SnakeFrame(host);
 		
-		host.setState("chickenFrame");
-//		host.setState("GuitarHeroFrame");
+//		host.setState("chickenFrame");
+		host.setState("GuitarHeroFrame");
 //		host.setState("SnakeFrame");
 	}
 
