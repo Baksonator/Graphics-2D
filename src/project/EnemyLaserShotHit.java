@@ -1,22 +1,19 @@
 package project;
 
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-public class EnemyLaserShot {
+public class EnemyLaserShotHit {
 
 	private int posX;
 	private int posY;
 	private BufferedImage image;
-	private boolean isRendered = false;
+	private int life;
+	private int duration;
 	
-	public EnemyLaserShot(BufferedImage image) {
+	public EnemyLaserShotHit(BufferedImage image) {
 		this.image = image;
-	}
-	
-	public Rectangle getBounds() {
-		return new Rectangle(posX - image.getWidth() / 2, posY - image.getHeight() / 2,
-				image.getWidth(), image.getHeight());
+		life = 0;
+		duration = 91;
 	}
 
 	public int getPosX() {
@@ -43,12 +40,20 @@ public class EnemyLaserShot {
 		this.image = image;
 	}
 
-	public boolean isRendered() {
-		return isRendered;
+	public int getLife() {
+		return life;
 	}
 
-	public void setRendered(boolean isRendered) {
-		this.isRendered = isRendered;
+	public void setLife(int life) {
+		this.life = life;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
 	}
 	
 }

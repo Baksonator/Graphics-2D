@@ -13,6 +13,8 @@ public class HeroShip {
 	private boolean isDamaged = false;
 	private int maxLeft;
 	private int maxRight;
+	private int hitDuration;
+	private boolean isDead = false;
 	
 	public HeroShip(BufferedImage image, int maxLeft, int maxRight) {
 		this.image = image;
@@ -20,6 +22,7 @@ public class HeroShip {
 		this.maxRight = maxRight;
 		health = 10;
 		livesLeft = 3;
+		hitDuration = 0;
 	}
 	
 	public Rectangle getBounds() {
@@ -79,6 +82,22 @@ public class HeroShip {
 
 	public void setDamaged(boolean isDamaged) {
 		this.isDamaged = isDamaged;
+	}
+
+	public int getHitDuration() {
+		return hitDuration;
+	}
+
+	public void setHitDuration(int hitDuration) {
+		this.hitDuration = hitDuration;
+	}
+
+	public boolean isDead() {
+		return isDead;
+	}
+
+	public void setDead(boolean isDead) {
+		this.isDead = isDead;
 	}
 	
 }

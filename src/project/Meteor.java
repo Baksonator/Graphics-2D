@@ -12,6 +12,8 @@ public class Meteor {
 	private int coolDown;
 	private int moveX;
 	private int moveY;
+	private float angle;
+	private float rotation;
 	
 	public Meteor(BufferedImage image, int maxWidth) {
 		this.image = image;
@@ -19,6 +21,8 @@ public class Meteor {
 		coolDown = (r.nextInt(30) + 1) * 61;
 		posX = r.nextInt(maxWidth);
 		posY = -image.getHeight() / 2;
+		angle = (float)(Math.random() * Math.PI * 2.0);
+		rotation = (float)(Math.random() - 0.5) * 0.3f;
 	}
 	
 	public Rectangle getBounds() {
@@ -72,6 +76,22 @@ public class Meteor {
 
 	public void setMoveY(int moveY) {
 		this.moveY = moveY;
+	}
+
+	public float getAngle() {
+		return angle;
+	}
+
+	public void setAngle(float angle) {
+		this.angle = angle;
+	}
+
+	public float getRotation() {
+		return rotation;
+	}
+
+	public void setRotation(float rotation) {
+		this.rotation = rotation;
 	}
 	
 }
