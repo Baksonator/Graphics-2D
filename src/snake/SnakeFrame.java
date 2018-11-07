@@ -85,22 +85,22 @@ public class SnakeFrame extends GameState{
 			   3  +  1
 			      2 
 		*/
-		if (keyCode == KeyEvent.VK_DOWN) {
+		if (keyCode == KeyEvent.VK_DOWN && direction != 0) {
 			hero.setAnimation(ANIM_DOWN);
 			hero.play();
 			direction = 2;
 		}
-		else if (keyCode == KeyEvent.VK_UP) {
+		else if (keyCode == KeyEvent.VK_UP && direction != 2) {
 			hero.setAnimation(ANIM_UP);
 			hero.play();
 			direction = 0;
 		}
-		else if (keyCode == KeyEvent.VK_LEFT) {
+		else if (keyCode == KeyEvent.VK_LEFT && direction != 1) {
 			hero.setAnimation(ANIM_RIGHT);
 			hero.play();
 			direction = 3;
 		}
-		else if (keyCode == KeyEvent.VK_RIGHT) {
+		else if (keyCode == KeyEvent.VK_RIGHT && direction != 3) {
 			hero.setAnimation(ANIM_LEFT);
 			hero.play();
 			direction = 1;
