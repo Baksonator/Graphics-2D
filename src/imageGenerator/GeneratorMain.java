@@ -16,14 +16,16 @@ import rafgfxlib.Util;
 public class GeneratorMain {
 
 	public static void main(String[] args) {
-		BufferedImage skalirana = ImageGenerator.scaleImageJava(Util.loadImage("spaceart/png/meteorSmall.png"), 
-				20, 20);
-		File outputFile = new File("spaceart/png/meteorMinor.png");
-		try {
-			ImageIO.write(skalirana, "png", outputFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		BufferedImage skalirana = ImageGenerator.scaleImageJava(Util.loadImage("spaceart/png/meteorSmall.png"), 
+//				20, 20);
+//		File outputFile = new File("spaceart/png/meteorMinor.png");
+//		try {
+//			ImageIO.write(skalirana, "png", outputFile);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		
+		joinLetterImages();
 	}
 	
 	public static void cutAndScaleArray() {

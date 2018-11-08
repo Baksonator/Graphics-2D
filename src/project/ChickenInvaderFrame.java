@@ -9,8 +9,10 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.util.Random;
 
+import project.Transition.TransitionType;
 import rafgfxlib.GameHost;
 import rafgfxlib.GameHost.GFMouseButton;
 import rafgfxlib.GameState;
@@ -44,6 +46,22 @@ public class ChickenInvaderFrame extends GameState {
 	private EnemyLaserShot[] enemyLaserShots;
 	private EnemyLaserShotHit[] enemyLaserShotHit;
 	
+	private boolean finishedFizzle = false;
+	private int rndval = 1;
+	private boolean isFilled[][];
+	private final static int RAND_MASKS[] = {
+			0x00000001, 0x00000003, 0x00000006, 0x0000000C, 0x00000014, 0x00000030,
+			0x00000060, 0x000000B8, 0x00000110, 0x00000240, 0x00000500, 0x00000CA0,
+			0x00001B00, 0x00003500, 0x00006000, 0x0000B400, 0x00012000, 0x00020400,
+			0x00072000, 0x00090000, 0x00140000, 0x00300000, 0x00400000, 0x00D80000,
+			0x01200000, 0x03880000, 0x07200000, 0x09000000, 0x14000000, 0x32800000,
+			0x48000000, 0xA3000000
+	};
+	private int size;
+	private int bitWidth;
+	private int mask;
+	private BufferedImage gameOverImage;
+	
 	public ChickenInvaderFrame(GameHost host) {
 		super(host);
 		
@@ -51,6 +69,12 @@ public class ChickenInvaderFrame extends GameState {
 		screenWidth = host.getWidth();
 		
 		backgroundColor = new Color(94, 63, 107);
+		
+		isFilled = new boolean[screenWidth][screentHeight];
+		size = screenWidth * screentHeight;
+		bitWidth = getBitWidth(size);
+		mask = RAND_MASKS[bitWidth - 1];
+		gameOverImage = Util.loadImage("tileset/fontset/Gameover.png");
 		
 		stars = new Star[50];
 		
@@ -132,6 +156,17 @@ public class ChickenInvaderFrame extends GameState {
 			enemyLaserShotHit[i] = new EnemyLaserShotHit(Util.loadImage("spaceart/png/laserRedShot.png"));
 		}
 	}
+	
+	private int getBitWidth(int n) {
+		int width = 0;
+		
+		while (n > 0) {
+			n >>= 1;
+			width++;
+		}
+		
+		return width;
+ 	}
 
 	@Override
 	public String getName() {
@@ -159,9 +194,11 @@ public class ChickenInvaderFrame extends GameState {
 	}
 
 	@Override
-	public void handleMouseDown(int arg0, int arg1, GFMouseButton arg2) {
-		// TODO Auto-generated method stub
-		
+	public void handleMouseDown(int x, int y, GFMouseButton button) {
+		if (button == GFMouseButton.Left) {
+			TransitionType transType = TransitionType.LeftRightSquash;
+			Transition.transitionTo("mainFrame", transType, 0.5f);
+		}
 	}
 
 	@Override
@@ -181,16 +218,122 @@ public class ChickenInvaderFrame extends GameState {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public void renderGameOver(Graphics2D g, int sw, int sh) {
+		g.setPaint(Color.RED);
+		for (int i = 0; i < 10000; i++) {
+			if (!finishedFizzle) {
+				
+//				int x, y;
+//				y = rndval & 0x000FF;
+//				x = (rndval & 0x1FF00) >>> 8;
+//				int lsb = rndval & 1;
+//				rndval = rndval >> 1;
+//				if (lsb == 1) {
+//					rndval ^= 0x00012000;
+//				}
+//				if (x < 1080 && y < 720) {
+//					isFilled[x][y] = true;
+//				}
+//				if (rndval == 1) {
+//					finishedFizzle = true;
+//				}
+				
+				
+				int x = (int)(0.5 + rndval % screenWidth) | 0;
+				int y = (int)(Math.ceil(rndval / screentHeight) - 1.0) | 0;
+				
+				if (x < screenWidth && y < screentHeight && x >= 0 && y >= 0) {
+					isFilled[x][y] = true;
+				}
+				
+				do {
+					rndval = (rndval >> 1) ^ ((rndval & 1) * mask);
+				} while (rndval > size);
+				if (rndval == 1) {
+					finishedFizzle = true;
+				}
+			}
+		}
+		for (int y = 0; y < screentHeight; y++) {
+			for (int x = 0; x < screenWidth; x++) {
+				if (isFilled[x][y]) {
+					g.drawLine(x, y, x, y);
+				}
+			}
+		}
+		if (finishedFizzle) {
+			g.drawImage(gameOverImage, screenWidth / 2 - gameOverImage.getWidth() / 2,
+					screentHeight / 2 - gameOverImage.getHeight() / 2, null);
+		}
+	}
+	
+	private BufferedImage blurImage(BufferedImage image, int radius) {
+		WritableRaster source = image.getRaster();
+		WritableRaster target = Util.createRaster(image.getWidth(), image.getHeight(), true);
+		
+		int rgb[] = new int[4];
+		int accum[] = new int[4];
+		
+		int sampleCount = 32;
+		
+		int width = source.getWidth();
+		int height = source.getHeight();
+		
+		for(int y = 0; y < height; y++)
+		{	
+			for(int x = 0; x < width; x++)
+			{
+				accum[0] = 0; accum[1] = 0; accum[2] = 0;
+				
+				for(int i = 0; i < sampleCount; i++)
+				{
+					// Za svaki uzorak odredjujemo nasumicnu koordinatu unutar
+					// (radius*2) x (radius*2) kvadrata oko trenutnog piksela
+					float X = (float)(Math.random() - 0.5) * radius * 2.0f;
+					float Y = (float)(Math.random() - 0.5) * radius * 2.0f;
+					
+					// Uzimamo bilinearan uzorak
+					Util.bilSampleA(source, x + X, y + Y, rgb);
+					
+					// I dodajemo ga na sumu
+					accum[0] += rgb[0];
+					accum[1] += rgb[1];
+					accum[2] += rgb[2];
+				}
+				
+				// Konacan piksel nam je prosjek uzetih uzoraka
+				rgb[0] = accum[0] / sampleCount;
+				rgb[1] = accum[1] / sampleCount;
+				rgb[2] = accum[2] / sampleCount;
+				
+				target.setPixel(x, y, rgb);
+			}
+		}
+		
+		return Util.rasterToImage(target);
+	}
 
 	@Override
 	public void render(Graphics2D g, int sw, int sh) {
-		Point2D center = new Point2D.Float(sw / 2, sh / 2);
-		float radius = (float)(Math.sqrt((sw - sw / 2) * (sw - sw / 2) + (sh - sh / 2) * (sh - sh / 2)));
-		float dist[] = {0.85f, 1.0f};
-		Color[] colors = {backgroundColor, Color.RED};
-		RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
+		if (heroShip.getHitDuration() > 0) {
+			Point2D center = new Point2D.Float(sw / 2, sh / 2);
+			float radius = (float)(Math.sqrt((sw - sw / 2) * (sw - sw / 2) + (sh - sh / 2) * (sh - sh / 2)));
+			float dist[] = new float[2];
+			if (heroShip.getHitDuration() > 45) {
+				dist[0] = ((float)(heroShip.getHitDuration() - 46) / 46);
+				dist[1] = 1.0f;
+			} else {
+				dist[0] = ((float)(46 - heroShip.getHitDuration()) / 46);
+				dist[1] = 1.0f;
+			}
+			Color[] colors = {backgroundColor, Color.RED};
+			RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
+			g.setPaint(p);
+		} else {
+			g.setPaint(backgroundColor);
+		}
 		
-		g.setPaint(p);
 		g.fillRect(0, 0, sw, sh);
 		
 		for (Star s : stars) {
@@ -223,8 +366,14 @@ public class ChickenInvaderFrame extends GameState {
 		
 		for (EnemyShip enemy : enemyShips) {
 			if (!enemy.isDead()) {
-				g.drawImage(enemy.getImage(), enemy.getPosX() - enemy.getImage().getWidth() / 2,
-						enemy.getPosY() + enemy.getImage().getHeight() / 2, null);
+				if (enemy.getHitDuration() > 0) {
+					BufferedImage blurredImage = blurImage(enemy.getImage(), 100 / 5);
+					g.drawImage(blurredImage, enemy.getPosX() - enemy.getImage().getWidth() / 2,
+							enemy.getPosY() + enemy.getImage().getHeight() / 2, null);
+				} else {
+					g.drawImage(enemy.getImage(), enemy.getPosX() - enemy.getImage().getWidth() / 2,
+							enemy.getPosY() + enemy.getImage().getHeight() / 2, null);
+				}
 			}
 		}
 		
@@ -279,6 +428,10 @@ public class ChickenInvaderFrame extends GameState {
 		}
 		
 		g.setComposite(prevComp);
+		
+		if (heroShip.isDead()) {
+			renderGameOver(g, sw, sh);
+		}
 	}
 
 	@Override
@@ -295,8 +448,12 @@ public class ChickenInvaderFrame extends GameState {
 
 	@Override
 	public void update() {
+		if (heroShip.isDead()) {
+			return;
+		}
+		
 		for (Star s : stars) {
-			s.setPosY(s.getPosY() + 5);
+			s.setPosY(s.getPosY() + s.getMoveY());
 			if (s.getPosY() >= screentHeight) {
 				s.setPosY(s.getPosY() - screentHeight);
 			}
@@ -352,6 +509,10 @@ public class ChickenInvaderFrame extends GameState {
 		for (EnemyShip enemy : enemyShips) {
 			if (r.nextInt(10000) + 1 > 9900 && enemy.isDead()) {
 				enemy.setDead(false);
+				enemy.setHealth(3);
+			}
+			if (!enemy.isDead()) {
+				enemy.setHitDuration(enemy.getHitDuration() - 1);
 			}
 			if (!enemy.isDead() && r.nextInt(100) == 43) {
 				for (EnemyLaserShot enemyLaserShot : enemyLaserShots) {
@@ -376,6 +537,7 @@ public class ChickenInvaderFrame extends GameState {
 				for (EnemyShip enemy : enemyShips) {
 					if (!enemy.isDead() && heroLaserShot.getBounds().intersects(enemy.getBounds())) {
 						enemy.setHealth(enemy.getHealth() - 1);
+						enemy.setHitDuration(100);
 						
 						heroLaserShot.setRendered(false);
 						

@@ -12,6 +12,7 @@ public class EnemyShip {
 	private int maxLeft;
 	private int maxRight;
 	private boolean isDead;
+	private int hitDuration;
 	
 	public EnemyShip(BufferedImage image, int maxLeft, int maxRight) {
 		this.image = image;
@@ -19,6 +20,7 @@ public class EnemyShip {
 		this.maxRight = maxRight;
 		health = 3;
 		isDead = true;
+		hitDuration = 0;
 	}
 	
 	public Rectangle getBounds() {
@@ -83,6 +85,14 @@ public class EnemyShip {
 
 	public void setDead(boolean isDead) {
 		this.isDead = isDead;
+	}
+
+	public int getHitDuration() {
+		return hitDuration;
+	}
+
+	public void setHitDuration(int hitDuration) {
+		this.hitDuration = hitDuration;
 	}
 	
 }

@@ -58,6 +58,9 @@ public class HeroShip {
 		if (this.health <= 4) {
 			isDamaged = true;
 		}
+		if (this.health <= 0) {
+			isDead = true;
+		}
 	}
 
 	public int getLivesLeft() {

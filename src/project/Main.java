@@ -15,10 +15,11 @@ public class Main {
 		new ChickenInvaderFrame(host);
 		new GuitarHeroFrame(host);
 		new SnakeFrame(host);
+		new Transition(host);
 		
-//		host.setState("chickenFrame");
+		host.setState("chickenFrame");
 //		host.setState("GuitarHeroFrame");
-		host.setState("SnakeFrame");
+//		host.setState("SnakeFrame");
 	}
 
 }
