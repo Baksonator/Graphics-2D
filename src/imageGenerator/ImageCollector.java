@@ -30,6 +30,7 @@ public class ImageCollector {
 	public static BufferedImage guitarHero;
 	public static BufferedImage presentation;
 	public static BufferedImage snake;
+	public static BufferedImage blurredEnemy[];
 	
 	public ImageCollector() {
 		heroSingle = new BufferedImage[16];
@@ -130,5 +131,84 @@ public class ImageCollector {
 		presentation = ImageGenerator.joinBufferedImageArrayVerticalCentered(helpArray);
 		
 		snake = ImageGenerator.joinLetterImages("Snake", charSet, emptyChar);
+		
+		blurredEnemy = new BufferedImage[20];
+		
+		for (int i = 0; i < blurredEnemy.length; i++) {
+			blurredEnemy[i] = ImageGenerator.blurImage(Util.loadImage("spaceart/png/enemyShip.png"), i + 1);
+		}
 	}
+
+	public static BufferedImage[] getHeroSingle() {
+		return heroSingle;
+	}
+
+	public static BufferedImage[] getHeroColumn() {
+		return heroColumn;
+	}
+
+	public static BufferedImage getHeroSet() {
+		return heroSet;
+	}
+
+	public static BufferedImage getNoise() {
+		return noise;
+	}
+
+	public static BufferedImage getBasicTile() {
+		return basicTile;
+	}
+
+	public static BufferedImage[] getCharSet() {
+		return charSet;
+	}
+
+	public static BufferedImage getEmptyChar() {
+		return emptyChar;
+	}
+
+	public static BufferedImage getTeam() {
+		return team;
+	}
+
+	public static BufferedImage getContinueGame() {
+		return continueGame;
+	}
+
+	public static BufferedImage getContinueGameRed() {
+		return continueGameRed;
+	}
+
+	public static BufferedImage getExitGame() {
+		return exitGame;
+	}
+
+	public static BufferedImage getExitGameRed() {
+		return exitGameRed;
+	}
+
+	public static BufferedImage getEpicQuest() {
+		return epicQuest;
+	}
+
+	public static BufferedImage getGameOver() {
+		return gameOver;
+	}
+
+	public static BufferedImage getGuitarHero() {
+		return guitarHero;
+	}
+
+	public static BufferedImage getPresentation() {
+		return presentation;
+	}
+
+	public static BufferedImage getSnake() {
+		return snake;
+	}
+
+	public static BufferedImage[] getBlurredEnemy() {
+		return blurredEnemy;
+	}
+	
 }
