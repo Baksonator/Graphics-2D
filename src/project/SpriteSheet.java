@@ -3,8 +3,6 @@ package project;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
-import rafgfxlib.Util;
-
 public class SpriteSheet {
 
 	private BufferedImage sheet;
@@ -12,13 +10,8 @@ public class SpriteSheet {
 	private int sheetW, sheetH;
 	private int offsetX = 0, offsetY = 0;
 
-	public SpriteSheet(String imageName, int columns, int rows) {
-		sheet = Util.loadImage(imageName);
-		if (imageName == null) {
-			sheet = null;
-			System.out.println("Error loading sprite sheet!");
-			return;
-		}
+	public SpriteSheet(BufferedImage image, int columns, int rows) {
+		sheet = image;
 
 		sheetW = columns;
 		sheetH = rows;

@@ -1,6 +1,7 @@
 package project;
 
-import rafgfxlib.Util;
+
+import imageGenerator.ImageCollector;
 
 public class Tilemap {
 
@@ -18,7 +19,7 @@ public class Tilemap {
 	
 	public Tilemap() {
 		
-		tileSet[0] = new Tile(Util.loadImage("tileset/Basic_tile.png"), 0, TILE_H);
+		tileSet[0] = new Tile(ImageCollector.getBasicTile(), 0, TILE_H);
 
 //		Koristicemo ovaj deo kod random generisanja drugih tipova polja
 //		for(int y = 0; y < mapH; ++y)

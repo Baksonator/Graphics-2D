@@ -9,6 +9,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
+import imageGenerator.ImageCollector;
 import project.AnimatedEntity;
 import project.SpriteSheet;
 import rafgfxlib.GameHost;
@@ -69,7 +70,7 @@ public class SnakeFrame extends GameState{
 			snakeBody.add(rec);
 		}
 		
-		heroSheet = new SpriteSheet("tileset/charset/heroSet.png", 4, 4);
+		heroSheet = new SpriteSheet(ImageCollector.getHeroSet(), 4, 4);
 		heroSheet.setOffsets(32, 64);
 		
 		hero = new AnimatedEntity(heroSheet, headX + bodyHeight, headY + bodyWidth);

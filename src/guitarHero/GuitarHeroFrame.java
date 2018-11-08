@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
+import imageGenerator.ImageCollector;
 import imageGenerator.ImageGenerator;
 import project.AnimatedEntity;
 import project.SpriteSheet;
@@ -70,7 +71,7 @@ public class GuitarHeroFrame extends GameState {
 		backgroundImage = Util.rasterToImage(guitarHeroBackground.getRaster());
 		backgroundImage = ImageGenerator.scaleImage(backgroundImage, width, height);
 		
-		heroSheet = new SpriteSheet("tileset/charset/heroSet.png", 4, 4);
+		heroSheet = new SpriteSheet(ImageCollector.getHeroSet(), 4, 4);
 		heroSheet.setOffsets(32, 64);
 		
 		hero = new AnimatedEntity(heroSheet, width / 2, height);

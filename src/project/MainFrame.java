@@ -9,10 +9,11 @@ import games.Chicken;
 import games.GameObject;
 import games.Guitar;
 import games.Snake;
+import imageGenerator.ImageCollector;
+import project.Transition.TransitionType;
 import rafgfxlib.GameHost;
 import rafgfxlib.GameHost.GFMouseButton;
 import rafgfxlib.GameState;
-import rafgfxlib.Util;
 
 public class MainFrame extends GameState {
 
@@ -60,20 +61,20 @@ public class MainFrame extends GameState {
 		
 		mapa = new Tilemap();
 		
-		heroSheet = new SpriteSheet("tileset/charset/heroSet.png", 4, 4);
+		heroSheet = new SpriteSheet(ImageCollector.getHeroSet(), 4, 4);
 		heroSheet.setOffsets(32, 64);
 		
 		heroj = new AnimatedEntity(heroSheet, 556, 392);
 		
-		introArray[0] = Util.loadImage("tileset/fontset/TeamBANTerPresents.png");
-		introArray[1] = Util.loadImage("tileset/fontset/EpicQuest.png");
-		introArray[2] = Util.loadImage("tileset/fontset/TeamMembersList.png");
+		introArray[0] = ImageCollector.getPresentation();
+		introArray[1] = ImageCollector.getEpicQuest();
+		introArray[2] = ImageCollector.getTeam();
 		
-		pausedArray[0] = Util.loadImage("tileset/fontset/ContinueGame.png");
-		pausedArray[1] = Util.loadImage("tileset/fontset/ContinueGameRed.png");
-		pausedArray[2] = Util.loadImage("tileset/fontset/ExitGame.png");
-		pausedArray[3] = Util.loadImage("tileset/fontset/ExitGameRed.png");
-		noise = Util.loadImage("tileset/Noise.png");
+		pausedArray[0] = ImageCollector.getContinueGame();
+		pausedArray[1] = ImageCollector.getContinueGameRed();
+		pausedArray[2] = ImageCollector.getExitGame();
+		pausedArray[3] = ImageCollector.getExitGameRed();
+		noise = ImageCollector.getNoise();
 		
 		guitar = new Guitar();
 		snake = new Snake();
@@ -215,8 +216,6 @@ public class MainFrame extends GameState {
 
 	@Override
 	public void render(Graphics2D g, int sw, int sh) {
-		isIntro = false;
-
 		if (isIntro) {
 			renderIntro(g, sw, sh);
 			return;
@@ -283,7 +282,9 @@ public class MainFrame extends GameState {
 			if (game.isDrawGame()) {
 				game.wantsToPlay(heroj.getPositionX(), heroj.getPositionY(), mapa.getCamX(), mapa.getCamY());
 				if (game.isPlaying()) {
-					host.setState(game.getFrameName());
+//					host.setState(game.getFrameName());
+					TransitionType transType = TransitionType.LeftRightSquash;
+					Transition.transitionTo(game.getFrameName(), transType, 1.0f);
 					mapa.setCamX(0);
 					mapa.setCamY(0);
 				}
