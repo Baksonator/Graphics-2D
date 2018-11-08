@@ -10,8 +10,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
+
+import imageGenerator.ImageCollector;
+import imageGenerator.ImageGenerator;
 import project.Transition.TransitionType;
 import rafgfxlib.GameHost;
 import rafgfxlib.GameHost.GFMouseButton;
@@ -62,11 +68,31 @@ public class ChickenInvaderFrame extends GameState {
 	private int mask;
 	private BufferedImage gameOverImage;
 	
+	private BufferedImage heroSingle[];
+	private BufferedImage heroColumn[];
+	private BufferedImage heroSet;
+	private BufferedImage noise;
+	private BufferedImage basicTile;
+	private BufferedImage charSet[];
+	private BufferedImage emptyChar;
+	private BufferedImage team;
+	private BufferedImage continueGame;
+	private BufferedImage continueGameRed;
+	private BufferedImage exitGame;
+	private BufferedImage exitGameRed;
+	private BufferedImage epicQuest;
+	private BufferedImage gameOver;
+	private BufferedImage guitarHero;
+	private BufferedImage presentation;
+	private BufferedImage snake;
+	
 	public ChickenInvaderFrame(GameHost host) {
 		super(host);
 		
 		screentHeight = host.getHeight();
 		screenWidth = host.getWidth();
+		
+		prepareArt();
 		
 		backgroundColor = new Color(94, 63, 107);
 		
@@ -74,7 +100,7 @@ public class ChickenInvaderFrame extends GameState {
 		size = screenWidth * screentHeight;
 		bitWidth = getBitWidth(size);
 		mask = RAND_MASKS[bitWidth - 1];
-		gameOverImage = Util.loadImage("tileset/fontset/Gameover.png");
+		gameOverImage = ImageCollector.gameOver;
 		
 		stars = new Star[50];
 		
@@ -167,6 +193,99 @@ public class ChickenInvaderFrame extends GameState {
 		
 		return width;
  	}
+	
+	private void prepareArt() {
+		heroSingle = new BufferedImage[16];
+		int column = 0;
+		for (int i = 0; i < heroSingle.length; i++) {
+			if (i != 0 && i % 4 == 0) {
+				column++;
+			}
+			heroSingle[i] = ImageGenerator.scaleImageJava(ImageGenerator.cutTile((i % 4) * 16, column * 32,
+					16, 32, Util.loadImage("tileset/character.png")), 64, 64);
+		}
+		
+		heroColumn = new BufferedImage[4];
+		for (int i = 0; i < heroColumn.length; i++) {
+			BufferedImage[] helpArray = {heroSingle[4 * i], heroSingle[4 * i + 1], heroSingle[4 * i + 2],
+					heroSingle[4 * i + 3]}; 
+			heroColumn[i] = ImageGenerator.joinBufferedImageArray(helpArray);
+		}
+		
+		heroSet = ImageGenerator.joinBufferedImageArrayVertical(heroColumn);
+		
+		WritableRaster raster = Util.createRaster(1080, 720, false);
+		int rgb[] = new int[3];
+		
+		Random rnd = new Random();
+
+		for(int y = 0; y < raster.getHeight(); y++)
+		{
+			for(int x = 0; x < raster.getWidth(); x++)
+			{
+				rgb[0] = rnd.nextInt(256);
+				rgb[1] = rnd.nextInt(256);
+				rgb[2] = rnd.nextInt(256);
+				
+				raster.setPixel(x, y, rgb);
+			}
+		}
+		
+		noise = Util.rasterToImage(raster);
+		
+		basicTile = ImageGenerator.scaleImageJava(ImageGenerator.cutTile(0, 0, 16, 16,
+				Util.loadImage("tileset/Overworld.png")), 64, 64);
+		
+		charSet = new BufferedImage[52];
+		column = 0;
+		for (int i = 0; i < charSet.length; i++) {
+			if (i != 0 && i % 26 == 0) {
+				column++;
+			}
+			charSet[i] = ImageGenerator.scaleImageJava(ImageGenerator.cutTile((i % 26) * 8, column * 16,
+					8, 16, Util.loadImage("tileset/font.png")), 64, 64);
+		}
+		
+		emptyChar = ImageGenerator.scaleImageJava(ImageGenerator.cutTile(208, 0, 8, 16,
+				Util.loadImage("tileset/font.png")), 64, 64);
+		
+		BufferedImage nevenaWord = ImageGenerator.joinLetterImages("Nevena Dresevic", charSet, emptyChar);
+		BufferedImage markoWord = ImageGenerator.joinLetterImages("Marko Matovic", charSet, emptyChar);
+		BufferedImage bogdanWord = ImageGenerator.joinLetterImages("Bogdan Bakarec", charSet, emptyChar);
+		BufferedImage teamMembers = ImageGenerator.joinLetterImages("Team members", charSet, emptyChar);
+		
+		BufferedImage helpArray[] = new BufferedImage[4];
+		
+		helpArray[0] = teamMembers;
+		helpArray[1] = nevenaWord;
+		helpArray[2] = markoWord;
+		helpArray[3] = bogdanWord;
+		
+		team = ImageGenerator.joinBufferedImageArrayVerticalCentered(helpArray);
+		
+		continueGame = ImageGenerator.joinLetterImages("Continue game", charSet, emptyChar);
+		continueGameRed = ImageGenerator.promeniBoju(continueGame, Color.RED);
+		
+		exitGame = ImageGenerator.joinLetterImages("Exit game", charSet, emptyChar);
+		exitGameRed = ImageGenerator.promeniBoju(exitGame, Color.RED);
+		
+		epicQuest = ImageGenerator.joinLetterImages("Epic Quest", charSet, emptyChar);
+		
+		gameOver = ImageGenerator.joinLetterImages("Game over", charSet, emptyChar);
+		
+		guitarHero = ImageGenerator.joinLetterImages("Guitar Hero", charSet, emptyChar);
+		
+		BufferedImage teamBANTer = ImageGenerator.joinLetterImages("Team BANTer", charSet, emptyChar);
+		BufferedImage presents = ImageGenerator.joinLetterImages("presents", charSet, emptyChar);
+		
+		helpArray = new BufferedImage[2];
+		helpArray[0] = teamBANTer;
+		helpArray[1] = presents;
+		
+		presentation = ImageGenerator.joinBufferedImageArrayVerticalCentered(helpArray);
+		
+		snake = ImageGenerator.joinLetterImages("Snake", charSet, emptyChar);
+	}
 
 	@Override
 	public String getName() {
@@ -268,6 +387,50 @@ public class ChickenInvaderFrame extends GameState {
 		}
 	}
 	
+	private static void bilSampleA(WritableRaster src, float u, float v, int[] color)
+	{
+		float[] a = new float[4];
+		float[] b = new float[4];
+		
+		int[] UL = new int[4];
+		int[] UR = new int[4];
+		int[] LL = new int[4];
+		int[] LR = new int[4];
+
+		int x0 = (int)u;
+		int y0 = (int)v;
+		int x1 = x0 + 1;
+		int y1 = y0 + 1;
+		
+		u -= x0;
+		v -= y0;
+		
+		if(x0 < 0) x0 = 0;
+		if(y0 < 0) y0 = 0;
+		if(x1 < 0) x1 = 0;
+		if(y1 < 0) y1 = 0;
+		
+		if(x0 >= src.getWidth()) x0 = src.getWidth() - 1;
+		if(y0 >= src.getHeight()) y0 = src.getHeight() - 1;
+		if(x1 >= src.getWidth()) x1 = src.getWidth() - 1;
+		if(y1 >= src.getHeight()) y1 = src.getHeight() - 1;
+		
+		src.getPixel(x0, y0, UL);
+		src.getPixel(x1, y0, UR);
+		src.getPixel(x0, y1, LL);
+		src.getPixel(x1, y1, LR);
+		
+		Util.lerpRGBAif(UL, UR, u, a);
+		Util.lerpRGBAif(LL, LR, u, b);
+		
+		color[0] = (int)(Util.lerpF(a[0], b[0], v));
+		color[1] = (int)(Util.lerpF(a[1], b[1], v));
+		color[2] = (int)(Util.lerpF(a[2], b[2], v));
+		color[3] = (int)(Util.lerpF(a[3], b[3], v));
+		
+		Util.clampRGBA(color);
+	}
+	
 	private BufferedImage blurImage(BufferedImage image, int radius) {
 		WritableRaster source = image.getRaster();
 		WritableRaster target = Util.createRaster(image.getWidth(), image.getHeight(), true);
@@ -286,6 +449,9 @@ public class ChickenInvaderFrame extends GameState {
 			{
 				accum[0] = 0; accum[1] = 0; accum[2] = 0;
 				
+				int help[] = new int[4];
+				source.getPixel(x, y, help);
+				
 				for(int i = 0; i < sampleCount; i++)
 				{
 					// Za svaki uzorak odredjujemo nasumicnu koordinatu unutar
@@ -294,7 +460,7 @@ public class ChickenInvaderFrame extends GameState {
 					float Y = (float)(Math.random() - 0.5) * radius * 2.0f;
 					
 					// Uzimamo bilinearan uzorak
-					Util.bilSampleA(source, x + X, y + Y, rgb);
+					bilSampleA(source, x + X, y + Y, rgb);
 					
 					// I dodajemo ga na sumu
 					accum[0] += rgb[0];
@@ -306,6 +472,7 @@ public class ChickenInvaderFrame extends GameState {
 				rgb[0] = accum[0] / sampleCount;
 				rgb[1] = accum[1] / sampleCount;
 				rgb[2] = accum[2] / sampleCount;
+				rgb[3] = help[3];
 				
 				target.setPixel(x, y, rgb);
 			}
@@ -367,7 +534,7 @@ public class ChickenInvaderFrame extends GameState {
 		for (EnemyShip enemy : enemyShips) {
 			if (!enemy.isDead()) {
 				if (enemy.getHitDuration() > 0) {
-					BufferedImage blurredImage = blurImage(enemy.getImage(), 100 / 5);
+					BufferedImage blurredImage = blurImage(enemy.getImage(), enemy.getHitDuration() / 5);
 					g.drawImage(blurredImage, enemy.getPosX() - enemy.getImage().getWidth() / 2,
 							enemy.getPosY() + enemy.getImage().getHeight() / 2, null);
 				} else {

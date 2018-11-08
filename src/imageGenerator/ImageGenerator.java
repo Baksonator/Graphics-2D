@@ -6,7 +6,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
 
 import rafgfxlib.ImageViewer;
 import rafgfxlib.Util;
@@ -205,6 +209,28 @@ public class ImageGenerator {
         g.dispose();
         
         return dyed;
+	}
+	
+	public static BufferedImage joinLetterImages(String word, BufferedImage[] letters, BufferedImage empty) {
+		BufferedImage[] arrayImg = new BufferedImage[word.length()];
+		
+		for (int i = 0; i < arrayImg.length; i++) {
+			char c = word.charAt(i);
+			int ascii = (int)c;
+			if (ascii < 97) {
+				if (ascii < 65) {
+					arrayImg[i] = empty;
+				} else {
+					arrayImg[i] = letters[2 * (ascii - 65)];
+				}
+			} else {
+				arrayImg[i] = letters[2 * (ascii - 97) + 1];
+			}
+		}
+		
+		BufferedImage konacna = ImageGenerator.joinBufferedImageArray(arrayImg);
+		
+		return konacna;
 	}
 	
 }

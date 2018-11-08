@@ -1,6 +1,7 @@
 package project;
 
 import guitarHero.GuitarHeroFrame;
+import imageGenerator.ImageCollector;
 import rafgfxlib.GameHost;
 import snake.SnakeFrame;
 
@@ -11,6 +12,7 @@ public class Main {
 		
 		host.setUpdateRate(61);
 		
+		new ImageCollector();
 		new MainFrame(host);
 		new ChickenInvaderFrame(host);
 		new GuitarHeroFrame(host);

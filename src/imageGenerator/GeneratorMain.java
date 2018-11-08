@@ -87,14 +87,13 @@ public class GeneratorMain {
 		g2d.dispose();
 	}
 
-	public static void joinImages() {
-		BufferedImage[] arrayImg = new BufferedImage[4];
+	public static void joinImages(BufferedImage[] arrayImg) {
 		
-		for (int i = 0; i < 4; i++) {
-			arrayImg[i] = Util.loadImage("tileset/charset/heroSet" + (i + 1) + ".png");
-		}
+//		for (int i = 0; i < arrayImg.length; i++) {
+//			arrayImg[i] = Util.loadImage("tileset/charset/heroSet" + (i + 1) + ".png");
+//		}
 		
-		BufferedImage konacna = ImageGenerator.joinBufferedImageArrayVertical(arrayImg);
+		BufferedImage konacna = ImageGenerator.joinBufferedImageArray(arrayImg);
 		
 		File outputFile = new File("tileset/charset/heroSet.png");
 		
