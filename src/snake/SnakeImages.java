@@ -4,11 +4,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
-
-import guitarHero.BeginEndIntro;
-import imageGenerator.ImageGenerator;
 import rafgfxlib.Util;
 
 public class SnakeImages {

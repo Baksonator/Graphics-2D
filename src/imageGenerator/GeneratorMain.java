@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-
-import rafgfxlib.ImageViewer;
 import rafgfxlib.Util;
 
 public class GeneratorMain {

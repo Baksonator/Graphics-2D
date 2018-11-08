@@ -11,14 +11,17 @@ public class Main {
 		
 		host.setUpdateRate(61);
 		
+		//new ImageCollector();
 		new MainFrame(host);
 		new ChickenInvaderFrame(host);
 		new GuitarHeroFrame(host);
 		new SnakeFrame(host);
+		//new Transition(host);
 		
+		host.setState("mainFrame");
 //		host.setState("chickenFrame");
 //		host.setState("GuitarHeroFrame");
-		host.setState("SnakeFrame");
+//		host.setState("SnakeFrame");
 	}
 
 }

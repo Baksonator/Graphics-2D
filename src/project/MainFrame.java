@@ -5,6 +5,10 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+import games.Chicken;
+import games.GameObject;
+import games.Guitar;
+import games.Snake;
 import rafgfxlib.GameHost;
 import rafgfxlib.GameHost.GFMouseButton;
 import rafgfxlib.GameState;
@@ -36,16 +40,23 @@ public class MainFrame extends GameState {
 	private int screenWidth;
 	private int screenHeight;
 	private BufferedImage noise;
+
+	private Guitar guitar;
+	private Snake snake;
+	private Chicken chicken;
+	private GameObject[] games = new GameObject[3];
+//	private BufferedImage guitarHero;
+//	private int guitarPositionX = 0, guitarPositionY = 0;
+//	private boolean guitarUp = false;
+//	private int deltaGuitar = 1;
+//	private int guitarTimer = 30;
+//	private int guitarCam = 0;
 	
 	public MainFrame(GameHost host) {
-		
-//		super("BANTer", 1080, 720);
 		super(host);
 		
 		screenHeight = 720;
 		screenWidth = 1080;
-		
-//		setUpdateRate(60);
 		
 		mapa = new Tilemap();
 		
@@ -64,7 +75,12 @@ public class MainFrame extends GameState {
 		pausedArray[3] = Util.loadImage("tileset/fontset/ExitGameRed.png");
 		noise = Util.loadImage("tileset/Noise.png");
 		
-//		startThread();
+		guitar = new Guitar();
+		snake = new Snake();
+		chicken = new Chicken();
+		games[0] = guitar;
+		games[1] = snake;
+		games[2] = chicken;
 	}
 
 	@Override
@@ -199,6 +215,8 @@ public class MainFrame extends GameState {
 
 	@Override
 	public void render(Graphics2D g, int sw, int sh) {
+		isIntro = false;
+
 		if (isIntro) {
 			renderIntro(g, sw, sh);
 			return;
@@ -236,7 +254,41 @@ public class MainFrame extends GameState {
 			}
 		}
 		
+		
+//		if ( guitarPositionY == 0) {
+//			guitarPositionY = 4 * Tilemap.TILE_H + mapa.getTileSet()[0].offsetY - mapa.getCamY();
+//			guitarCam = mapa.getCamY();
+//		}
+//		if (guitarUp) {
+//			guitarPositionY = guitarPositionY + deltaGuitar - guitarCam;
+//		} else {
+//			guitarPositionY = guitarPositionY - deltaGuitar - guitarCam;
+//		}
+		
+		for (GameObject game : games) {
+			if (game.isDrawGame()) {
+				g.drawImage(game.getImage(), game.getPositionX() - mapa.getCamX(), game.getPositionY() - mapa.getCamY(), null);
+			}
+		}
+		
 		heroj.draw(g);
+		
+	}
+	
+	// method that checks which game objects should be visible and if a player wants to play
+	public void checkGameObjects() {
+		for (GameObject game : games) {
+			game.shouldDrawObject(mapa.getCamX(), mapa.getCamY(), screenWidth, screenHeight);
+			
+			if (game.isDrawGame()) {
+				game.wantsToPlay(heroj.getPositionX(), heroj.getPositionY(), mapa.getCamX(), mapa.getCamY());
+				if (game.isPlaying()) {
+					host.setState(game.getFrameName());
+					mapa.setCamX(0);
+					mapa.setCamY(0);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -255,12 +307,23 @@ public class MainFrame extends GameState {
 		}
 		
 		heroj.update();
+		
+		checkGameObjects();
+		
+//		if (guitarUp) {
+//			guitarTimer--;
+//			if (guitarTimer == 0) {
+//				guitarUp = false;
+//				guitarTimer = 30;
+//			}
+//		} else {
+//			guitarTimer--;
+//			if (guitarTimer == 0) {
+//				guitarUp = true;
+//				guitarTimer = 30;
+//			}
+//		}
 	}
-
-//	public static void main(String[] args) {
-////		GameFrame gf = new MainFrame();
-////		gf.initGameWindow();
-//	}
 
 	@Override
 	public String getName() {

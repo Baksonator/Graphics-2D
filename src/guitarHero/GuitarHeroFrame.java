@@ -10,7 +10,6 @@ import java.util.Random;
 import imageGenerator.ImageGenerator;
 import project.AnimatedEntity;
 import project.SpriteSheet;
-import rafgfxlib.GameFrame;
 import rafgfxlib.GameHost;
 import rafgfxlib.GameHost.GFMouseButton;
 import rafgfxlib.GameState;
@@ -45,8 +44,15 @@ public class GuitarHeroFrame extends GameState {
 	private int centerTimer = 180;
 	private boolean isOver = false;
 	
+	private boolean isLeft = false;
+	private boolean isRight = false;
+	private int transitionTimer = 10;
+	private int deltaTransition;
+	
 	private boolean musicOn = false;
 	Random r = new Random();
+	
+	private int gameOverTime = 150;
 	
 	public GuitarHeroFrame(GameHost gameHost) {
 		super(gameHost);
@@ -73,6 +79,24 @@ public class GuitarHeroFrame extends GameState {
 		music = new Music();
 		beginEndIntro = new BeginEndIntro();
 		introImage = beginEndIntro.getBeginImage();
+		
+		deltaTransition = width / 60;
+	}
+	
+	public void setEverythingBack() {
+		circlesCount = 30;
+		pause = 0;
+		isIntro = true;
+		wordPos = 719;
+		isCentered = false;
+		centerTimer = 180;
+		isOver = false;
+		
+		isLeft = false;
+		isRight = false;
+		transitionTimer = 10;
+		
+		new GuitarHeroFrame(host);
 	}
 
 	@Override
@@ -86,11 +110,11 @@ public class GuitarHeroFrame extends GameState {
 			hero.play();
 		}
 		else if (keyCode == KeyEvent.VK_LEFT) {
-			hero.setAnimation(ANIM_LEFT);
+			hero.setAnimation(ANIM_RIGHT);
 			hero.play();
 		}
 		else if (keyCode == KeyEvent.VK_RIGHT) {
-			hero.setAnimation(ANIM_RIGHT);
+			hero.setAnimation(ANIM_LEFT);
 			hero.play();
 		}
 	}
@@ -99,21 +123,14 @@ public class GuitarHeroFrame extends GameState {
 	public void handleKeyUp(int keyCode) {
 		if (keyCode == KeyEvent.VK_RIGHT) {
 			if (hero.getPositionX() < 2 * width / 3) {
-//				int startPos = hero.getPositionX();
-//				int finalPos = startPos + width / 6;
-//				for (int i = 0; i < 5; i++) {
-//					int delta = (finalPos - startPos) / 5;
-//					hero.setPosition(startPos + delta*(i + 1), hero.getPositionY());
-//					hero.update();
-//					hero.setAnimation(ANIM_RIGHT);
-//					hero.play();
-//				}
-				hero.setPosition(hero.getPositionX() + width / 6, hero.getPositionY());
+				isRight = true;
+				//hero.setPosition(hero.getPositionX() + width / 6, hero.getPositionY());
 			}
 		}
 		if (keyCode == KeyEvent.VK_LEFT) {
 			if (hero.getPositionX() > width / 3 + 1) {
-				hero.setPosition(hero.getPositionX() - width / 6, hero.getPositionY());
+				isLeft = true;
+				//hero.setPosition(hero.getPositionX() - width / 6, hero.getPositionY());
 			}
 		}
 		hero.setAnimation(ANIM_UP);
@@ -167,7 +184,7 @@ public class GuitarHeroFrame extends GameState {
 	
 	@Override
 	public void render(Graphics2D graphics, int width, int height) {
-		
+		//isIntro = false;
 		if (isIntro) {
 //			if (!musicOn) {
 //				music.playMusic();
@@ -190,9 +207,23 @@ public class GuitarHeroFrame extends GameState {
 		}
 		
 	}
+	
+	public void returnToMainFrame() {
+		host.setState("mainFrame");
+		setEverythingBack();
+	}
 
 	@Override
 	public void update() {
+		
+		if (isOver) {
+			gameOverTime--;
+			
+			 if (gameOverTime <= 0) {
+				 returnToMainFrame();
+		     }
+			 
+		}
 		// if game has ended show score 
 		if (circles.get(circlesCount - 1).startY >= height && endImage == null) {
 			endImage = beginEndIntro.endScoreImage(score);
@@ -234,6 +265,27 @@ public class GuitarHeroFrame extends GameState {
 				}
 			}
 		}
+		
+		if (isLeft) {
+			hero.setPosition(hero.getPositionX() - deltaTransition, hero.getPositionY());
+			hero.setAnimation(ANIM_UP);
+			transitionTimer--;
+			if (transitionTimer == 0) {
+				isLeft = false;
+				transitionTimer = 10;
+			}
+		}
+		
+		if (isRight && transitionTimer >= 0) {
+			hero.setPosition(hero.getPositionX() + deltaTransition, hero.getPositionY());
+			hero.setAnimation(ANIM_UP);
+			transitionTimer--;
+			if (transitionTimer == 0) {
+				isRight = false;
+				transitionTimer = 10;
+			}
+		}
+		
 		
 		hero.update();
 	}
