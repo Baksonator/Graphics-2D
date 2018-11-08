@@ -8,12 +8,14 @@ public class Star {
 	private int posX;
 	private int posY;
 	private BufferedImage image;
+	private int moveY;
 	
 	public Star(BufferedImage image, int maxWidth, int maxHeight) {
 		this.image = image;
 		Random r = new Random();
 		posX = r.nextInt(maxWidth);
 		posY = r.nextInt(maxHeight);
+		moveY = 1 + r.nextInt(5);
 	}
 
 	public int getPosX() {
@@ -38,6 +40,14 @@ public class Star {
 
 	public void setImage(BufferedImage image) {
 		this.image = image;
+	}
+
+	public int getMoveY() {
+		return moveY;
+	}
+
+	public void setMoveY(int moveY) {
+		this.moveY = moveY;
 	}
 	
 }

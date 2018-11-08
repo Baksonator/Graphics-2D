@@ -1,7 +1,5 @@
 package project;
 
-import java.awt.image.BufferedImage;
-
 import rafgfxlib.Util;
 
 public class Tilemap {
@@ -19,8 +17,6 @@ public class Tilemap {
 	private int[][] tileMap = new int[mapW][mapH];
 	
 	public Tilemap() {
-		
-		BufferedImage tileSheet = Util.loadImage("tileset/Overworld.png");
 		
 		tileSet[0] = new Tile(Util.loadImage("tileset/Basic_tile.png"), 0, TILE_H);
 

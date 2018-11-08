@@ -204,4 +204,120 @@ public class ImageGenerator {
         return dyed;
 	}
 	
+	public static BufferedImage joinLetterImages(String word, BufferedImage[] letters, BufferedImage empty) {
+		BufferedImage[] arrayImg = new BufferedImage[word.length()];
+		
+		for (int i = 0; i < arrayImg.length; i++) {
+			char c = word.charAt(i);
+			int ascii = (int)c;
+			if (ascii < 97) {
+				if (ascii < 65) {
+					arrayImg[i] = empty;
+				} else {
+					arrayImg[i] = letters[2 * (ascii - 65)];
+				}
+			} else {
+				arrayImg[i] = letters[2 * (ascii - 97) + 1];
+			}
+		}
+		
+		BufferedImage konacna = ImageGenerator.joinBufferedImageArray(arrayImg);
+		
+		return konacna;
+	}
+	
+	public static BufferedImage blurImage(BufferedImage image, int radius) {
+		WritableRaster source = image.getRaster();
+		WritableRaster target = Util.createRaster(image.getWidth(), image.getHeight(), true);
+		
+		int rgb[] = new int[4];
+		int accum[] = new int[4];
+		
+		int sampleCount = 32;
+		
+		int width = source.getWidth();
+		int height = source.getHeight();
+		
+		for(int y = 0; y < height; y++)
+		{	
+			for(int x = 0; x < width; x++)
+			{
+				accum[0] = 0; accum[1] = 0; accum[2] = 0;
+				
+				int help[] = new int[4];
+				source.getPixel(x, y, help);
+				
+				for(int i = 0; i < sampleCount; i++)
+				{
+					// Za svaki uzorak odredjujemo nasumicnu koordinatu unutar
+					// (radius*2) x (radius*2) kvadrata oko trenutnog piksela
+					float X = (float)(Math.random() - 0.5) * radius * 2.0f;
+					float Y = (float)(Math.random() - 0.5) * radius * 2.0f;
+					
+					// Uzimamo bilinearan uzorak
+					bilSampleA(source, x + X, y + Y, rgb);
+					
+					// I dodajemo ga na sumu
+					accum[0] += rgb[0];
+					accum[1] += rgb[1];
+					accum[2] += rgb[2];
+				}
+				
+				// Konacan piksel nam je prosjek uzetih uzoraka
+				rgb[0] = accum[0] / sampleCount;
+				rgb[1] = accum[1] / sampleCount;
+				rgb[2] = accum[2] / sampleCount;
+				rgb[3] = help[3];
+				
+				target.setPixel(x, y, rgb);
+			}
+		}
+		
+		return Util.rasterToImage(target);
+	}
+	
+	private static void bilSampleA(WritableRaster src, float u, float v, int[] color)
+	{
+		float[] a = new float[4];
+		float[] b = new float[4];
+		
+		int[] UL = new int[4];
+		int[] UR = new int[4];
+		int[] LL = new int[4];
+		int[] LR = new int[4];
+
+		int x0 = (int)u;
+		int y0 = (int)v;
+		int x1 = x0 + 1;
+		int y1 = y0 + 1;
+		
+		u -= x0;
+		v -= y0;
+		
+		if(x0 < 0) x0 = 0;
+		if(y0 < 0) y0 = 0;
+		if(x1 < 0) x1 = 0;
+		if(y1 < 0) y1 = 0;
+		
+		if(x0 >= src.getWidth()) x0 = src.getWidth() - 1;
+		if(y0 >= src.getHeight()) y0 = src.getHeight() - 1;
+		if(x1 >= src.getWidth()) x1 = src.getWidth() - 1;
+		if(y1 >= src.getHeight()) y1 = src.getHeight() - 1;
+		
+		src.getPixel(x0, y0, UL);
+		src.getPixel(x1, y0, UR);
+		src.getPixel(x0, y1, LL);
+		src.getPixel(x1, y1, LR);
+		
+		Util.lerpRGBAif(UL, UR, u, a);
+		Util.lerpRGBAif(LL, LR, u, b);
+		
+		color[0] = (int)(Util.lerpF(a[0], b[0], v));
+		color[1] = (int)(Util.lerpF(a[1], b[1], v));
+		color[2] = (int)(Util.lerpF(a[2], b[2], v));
+		color[3] = (int)(Util.lerpF(a[3], b[3], v));
+		
+		Util.clampRGBA(color);
+	}
+	
 }

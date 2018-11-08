@@ -1,6 +1,7 @@
 package project;
 
 import guitarHero.GuitarHeroFrame;
+import imageGenerator.ImageCollector;
 import rafgfxlib.GameHost;
 import snake.SnakeFrame;
 
@@ -10,13 +11,16 @@ public class Main {
 		GameHost host = new GameHost("BANTer", 1080, 720, false);
 		
 		host.setUpdateRate(61);
-		
+
 		//new ImageCollector();
+		new ImageCollector();
 		new MainFrame(host);
 		new ChickenInvaderFrame(host);
 		new GuitarHeroFrame(host);
 		new SnakeFrame(host);
+		
 		//new Transition(host);
+		new Transition(host);
 		
 		host.setState("mainFrame");
 //		host.setState("chickenFrame");
