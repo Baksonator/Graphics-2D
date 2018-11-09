@@ -28,7 +28,7 @@ public class MainFrame extends GameState {
 	private static final int ANIM_UP = 2;
 	private static final int ANIM_RIGHT = 1;
 
-	private boolean isIntro = false;
+	private boolean isIntro = true;
 	private int wordPos = 719;
 	private boolean isCentered = false;
 	private int centerTimer = 180;
