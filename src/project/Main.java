@@ -4,6 +4,7 @@ import guitarHero.GuitarHeroFrame;
 import imageGenerator.ImageCollector;
 import rafgfxlib.GameHost;
 import snake.SnakeFrame;
+import tower.TowerFrame;
 
 public class Main {
 
@@ -18,10 +19,13 @@ public class Main {
 		new ChickenInvaderFrame(host);
 		new GuitarHeroFrame(host);
 		new SnakeFrame(host);
+		new TowerFrame(host);
+		
 		
 		//new Transition(host);
 		new Transition(host);
 		
+		//host.setState("TowerFrame");
 		host.setState("mainFrame");
 //		host.setState("chickenFrame");
 //		host.setState("GuitarHeroFrame");

@@ -36,7 +36,14 @@ public class ImageCollector {
 	public static BufferedImage yellowSmallApple;
 	public static BufferedImage numbersSet[];
 	public static BufferedImage score;
-	
+	// marko
+	public static BufferedImage towerObject;
+	public static BufferedImage backgroundTile;
+	public static BufferedImage wall;
+	public static BufferedImage jumperR;
+	public static BufferedImage jumperL;
+	public static BufferedImage fence;
+
 	public ImageCollector() {
 		heroSingle = new BufferedImage[16];
 		int column = 0;
@@ -44,107 +51,107 @@ public class ImageCollector {
 			if (i != 0 && i % 4 == 0) {
 				column++;
 			}
-			heroSingle[i] = ImageGenerator.scaleImageJava(ImageGenerator.cutTile((i % 4) * 16, column * 32,
-					16, 32, Util.loadImage("tileset/character.png")), 64, 64);
+			heroSingle[i] = ImageGenerator.scaleImageJava(
+					ImageGenerator.cutTile((i % 4) * 16, column * 32, 16, 32, Util.loadImage("tileset/character.png")),
+					64, 64);
 		}
-		
+
 		heroColumn = new BufferedImage[4];
 		for (int i = 0; i < heroColumn.length; i++) {
-			BufferedImage[] helpArray = {heroSingle[4 * i], heroSingle[4 * i + 1], heroSingle[4 * i + 2],
-					heroSingle[4 * i + 3]}; 
+			BufferedImage[] helpArray = { heroSingle[4 * i], heroSingle[4 * i + 1], heroSingle[4 * i + 2],
+					heroSingle[4 * i + 3] };
 			heroColumn[i] = ImageGenerator.joinBufferedImageArray(helpArray);
 		}
-		
+
 		heroSet = ImageGenerator.joinBufferedImageArrayVertical(heroColumn);
-		
+
 		WritableRaster raster = Util.createRaster(1080, 720, false);
 		int rgb[] = new int[3];
-		
+
 		Random rnd = new Random();
 
-		for(int y = 0; y < raster.getHeight(); y++)
-		{
-			for(int x = 0; x < raster.getWidth(); x++)
-			{
+		for (int y = 0; y < raster.getHeight(); y++) {
+			for (int x = 0; x < raster.getWidth(); x++) {
 				rgb[0] = rnd.nextInt(256);
 				rgb[1] = rnd.nextInt(256);
 				rgb[2] = rnd.nextInt(256);
-				
+
 				raster.setPixel(x, y, rgb);
 			}
 		}
-		
+
 		noise = Util.rasterToImage(raster);
-		
-		basicTile = ImageGenerator.scaleImageJava(ImageGenerator.cutTile(0, 0, 16, 16,
-				Util.loadImage("tileset/Overworld.png")), 64, 64);
-		
+
+		basicTile = ImageGenerator
+				.scaleImageJava(ImageGenerator.cutTile(0, 0, 16, 16, Util.loadImage("tileset/Overworld.png")), 64, 64);
+
 		charSet = new BufferedImage[52];
 		column = 0;
 		for (int i = 0; i < charSet.length; i++) {
 			if (i != 0 && i % 26 == 0) {
 				column++;
 			}
-			charSet[i] = ImageGenerator.scaleImageJava(ImageGenerator.cutTile((i % 26) * 8, column * 16,
-					8, 16, Util.loadImage("tileset/font.png")), 64, 64);
+			charSet[i] = ImageGenerator.scaleImageJava(
+					ImageGenerator.cutTile((i % 26) * 8, column * 16, 8, 16, Util.loadImage("tileset/font.png")), 64,
+					64);
 		}
-		
-		emptyChar = ImageGenerator.scaleImageJava(ImageGenerator.cutTile(208, 0, 8, 16,
-				Util.loadImage("tileset/font.png")), 64, 64);
-		
+
+		emptyChar = ImageGenerator
+				.scaleImageJava(ImageGenerator.cutTile(208, 0, 8, 16, Util.loadImage("tileset/font.png")), 64, 64);
+
 		BufferedImage nevenaWord = ImageGenerator.joinLetterImages("Nevena Dresevic", charSet, emptyChar);
 		BufferedImage markoWord = ImageGenerator.joinLetterImages("Marko Matovic", charSet, emptyChar);
 		BufferedImage bogdanWord = ImageGenerator.joinLetterImages("Bogdan Bakarec", charSet, emptyChar);
 		BufferedImage teamMembers = ImageGenerator.joinLetterImages("Team members", charSet, emptyChar);
-		
+
 		BufferedImage helpArray[] = new BufferedImage[4];
-		
+
 		helpArray[0] = teamMembers;
 		helpArray[1] = nevenaWord;
 		helpArray[2] = markoWord;
 		helpArray[3] = bogdanWord;
-		
+
 		team = ImageGenerator.joinBufferedImageArrayVerticalCentered(helpArray);
-		
+
 		continueGame = ImageGenerator.joinLetterImages("Continue game", charSet, emptyChar);
 		continueGameRed = ImageGenerator.promeniBoju(continueGame, Color.RED);
-		
+
 		exitGame = ImageGenerator.joinLetterImages("Exit game", charSet, emptyChar);
 		exitGameRed = ImageGenerator.promeniBoju(exitGame, Color.RED);
-		
+
 		epicQuest = ImageGenerator.joinLetterImages("Epic Quest", charSet, emptyChar);
-		
+
 		gameOver = ImageGenerator.joinLetterImages("Game over", charSet, emptyChar);
-		
+
 		guitarHero = ImageGenerator.joinLetterImages("Guitar Hero", charSet, emptyChar);
-		
+
 		BufferedImage teamBANTer = ImageGenerator.joinLetterImages("Team BANTer", charSet, emptyChar);
 		BufferedImage presents = ImageGenerator.joinLetterImages("presents", charSet, emptyChar);
-		
+
 		helpArray = new BufferedImage[2];
 		helpArray[0] = teamBANTer;
 		helpArray[1] = presents;
-		
+
 		presentation = ImageGenerator.joinBufferedImageArrayVerticalCentered(helpArray);
-		
+
 		snake = ImageGenerator.joinLetterImages("SNAKE", charSet, emptyChar);
-		
+
 		blurredEnemy = new BufferedImage[20];
-		
+
 		for (int i = 0; i < blurredEnemy.length; i++) {
 			blurredEnemy[i] = ImageGenerator.blurImage(Util.loadImage("spaceart/png/enemyShip.png"), i + 1);
 		}
-		
+
 		chickenObject = ImageGenerator.scaleImageJava(Util.loadImage("spaceart/png/player.png"), 100, 100);
 		guitarObject = ImageGenerator.scaleImageJava(Util.loadImage("objects/guitar.png"), 100, 100);
 		snakeObject = ImageGenerator.scaleImageJava(Util.loadImage("objects/snake.png"), 100, 100);
-		
+		towerObject = ImageGenerator.scaleImageJava(Util.loadImage("objects/towericon.png"), 100, 100);
+
 		greenApple = ImageGenerator.scaleImageJava(Util.loadImage("objects/green_apple.png"), 40, 40);
 		greenSmallApple = ImageGenerator.scaleImageJava(Util.loadImage("objects/green_apple.png"), 30, 30);
 		redSmallApple = ImageGenerator.scaleImageJava(Util.loadImage("objects/red_small_apple.png"), 30, 30);
 		yellowSmallApple = ImageGenerator.scaleImageJava(Util.loadImage("objects/green_apple.png"), 30, 30);
-		
-		
+
 		numbersSet = new BufferedImage[12];
 		int count = 0;
 		for (int j = 0; j <= 24; j += 8) {
@@ -153,8 +160,38 @@ public class ImageCollector {
 				numbersSet[count++] = ImageGenerator.scaleImageJava(isecena, 64, 64);
 			}
 		}
-		
+
 		score = ImageGenerator.joinLetterImages("score", charSet, emptyChar);
+
+		// marko
+		backgroundTile = ImageGenerator.scaleImageJava(Util.loadImage("twrRes/bricks1.png"), 64, 64);
+		jumperR = ImageGenerator.setTransparentBackground(Util.loadImage("twrRes/rightChar.png"));
+		jumperR = ImageGenerator.scaleImageJava(jumperR, 64 * 14, 63 * 3);
+		jumperL = ImageGenerator.mirrorFlip(jumperR);
+		//
+		fence = ImageGenerator.scaleImage(Util.loadImage("twrRes/fence.png"), 640, 32);
+		fence = ImageGenerator.setTransparentBackground(fence);
+
+	}
+
+	public static BufferedImage getFence() {
+		return fence;
+	}
+
+	public static BufferedImage getJumperR() {
+		return jumperR;
+	}
+
+	public static BufferedImage getJumperL() {
+		return jumperL;
+	}
+
+	public static BufferedImage getWall() {
+		return wall;
+	}
+
+	public static BufferedImage getBackgroundTile() {
+		return backgroundTile;
 	}
 
 	public static BufferedImage[] getHeroSingle() {
@@ -264,5 +301,9 @@ public class ImageCollector {
 	public static BufferedImage getScore() {
 		return score;
 	}
-	
+
+	public static BufferedImage getTowerObject() {
+		return towerObject;
+	}
+
 }

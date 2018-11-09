@@ -329,19 +329,31 @@ public class ImageGenerator {
 	}
 
 	public static BufferedImage setTransparentBackground(BufferedImage image) {
-		BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(),
-				BufferedImage.TYPE_INT_ARGB);
+		BufferedImage newImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2 = newImage.createGraphics();
 		// fill background
 		g2.setComposite(AlphaComposite.Clear);
 		g2.fillRect(0, 0, newImage.getWidth(), newImage.getHeight());
 		// draw image
 		g2.setComposite(AlphaComposite.Src);
-		
+
 		g2.drawImage(image, 0, 0, null);
 		g2.dispose();
-		
+
 		return newImage;
 	}
 
+	public static BufferedImage mirrorFlip(BufferedImage image) {
+		WritableRaster source = image.getRaster();
+		WritableRaster target = Util.createRaster(image.getWidth(), image.getHeight(), true);
+		int rgb[] = new int[4];
+
+		for (int y = 0; y < source.getHeight(); y++) {
+			for (int x = 0; x < source.getWidth(); x++) {
+				source.getPixel(x, y, rgb);
+				target.setPixel(source.getWidth() - x - 1, y, rgb);
+			}
+		}
+		return Util.rasterToImage(target);
+	}
 }
