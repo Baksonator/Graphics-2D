@@ -47,7 +47,7 @@ public class TowerFrame extends GameState {
 	boolean check2 = false;
 	private int grav = -35;
 
-	private int gameOverTime = 61 * 30;
+	private int gameOverTime = 61 * 15;
 	private ArrayList<Bat> bats = new ArrayList<>();
 
 	public TowerFrame(GameHost host) {
