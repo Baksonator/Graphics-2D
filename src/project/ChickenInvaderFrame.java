@@ -62,6 +62,10 @@ public class ChickenInvaderFrame extends GameState {
 	private int mask;
 	private BufferedImage gameOverImage;
 	
+	private boolean isTransition = false;
+	
+	private int gameOverTime = 91;
+	
 	public ChickenInvaderFrame(GameHost host) {
 		super(host);
 		
@@ -168,6 +172,95 @@ public class ChickenInvaderFrame extends GameState {
 		return width;
  	}
 	
+	private void resetParameters() {
+		isTransition = true;
+		
+		finishedFizzle = false;
+		rndval = 1;
+		gameOverTime = 91;
+		
+		stars = new Star[50];
+		
+		BufferedImage malaZvezda = Util.loadImage("spaceart/png/Background/starSmall.png");
+		BufferedImage velikaZvezda = Util.loadImage("spaceart/png/Background/starBig.png");
+		
+		for (int i = 0; i < stars.length; i++) {
+			if ((r.nextInt(100) + 1) + 17 >= 50) {
+				stars[i] = new Star(malaZvezda, host.getWidth(), host.getHeight());
+			} else {
+				stars[i] = new Star(velikaZvezda, host.getWidth(), host.getHeight());
+			}
+		}
+		
+		meteors = new Meteor[5];
+		
+		BufferedImage maliMeteor = Util.loadImage("spaceart/png/meteorSmall.png");
+		BufferedImage velikiMeteor = Util.loadImage("spaceart/png/meteorBig.png");
+		
+		for (int i = 0; i < meteors.length; i++) {
+			if (i < 2) {
+				meteors[i] = new Meteor(velikiMeteor, host.getWidth());
+			} else {
+				meteors[i] = new Meteor(maliMeteor, host.getWidth());
+			}
+		}
+		
+		destroyedMeteors = new Meteor[meteors.length * 2];
+		
+		BufferedImage maliUnisteniMeteor = Util.loadImage("spaceart/png/meteorMinor.png");
+		BufferedImage velikiUnisteniMeteor = Util.loadImage("spaceart/png/meteorSmall.png");
+		
+		for (int i = 0; i < destroyedMeteors.length; i++) {
+			if (i < 4) {
+				destroyedMeteors[i] = new Meteor(velikiUnisteniMeteor, host.getWidth());
+			} else {
+				destroyedMeteors[i] = new Meteor(maliUnisteniMeteor, host.getWidth());
+			}
+		}
+		
+		enemyShips = new EnemyShip[3];
+		
+		BufferedImage neprijateljSlika = Util.loadImage("spaceart/png/enemyShip.png");
+		
+		for (int i = 0; i < enemyShips.length; i++) {
+			enemyShips[i] = new EnemyShip(neprijateljSlika, 10 + neprijateljSlika.getWidth() / 2,
+					screenWidth - 10 - neprijateljSlika.getWidth() / 2);
+			enemyShips[i].setPosY(10 + i * neprijateljSlika.getHeight());
+			enemyShips[i].setPosX(enemyShips[i].getMaxLeft() 
+					+ r.nextInt(enemyShips[i].getMaxRight() - enemyShips[i].getMaxLeft()));
+			
+		}
+		
+		heroLaserShots = new HeroLaserShot[10];
+		
+		for (int i = 0; i < heroLaserShots.length; i++) {
+			heroLaserShots[i] = new HeroLaserShot(Util.loadImage("spaceart/png/laserGreen.png"));
+		}
+		
+		heroLaserShotHit = new HeroLaserShotHit[enemyShips.length];
+		
+		for (int i = 0; i < heroLaserShotHit.length; i++) {
+			heroLaserShotHit[i] = new HeroLaserShotHit(Util.loadImage("spaceart/png/laserGreenShot.png"));
+		}
+		
+		enemyLaserShots = new EnemyLaserShot[30];
+		
+		for (int i = 0; i < enemyLaserShots.length; i++) {
+			enemyLaserShots[i] = new EnemyLaserShot(Util.loadImage("spaceart/png/laserRed.png"));
+		}
+		
+		enemyLaserShotHit = new EnemyLaserShotHit[30];
+		
+		for (int i = 0; i < enemyLaserShotHit.length; i++) {
+			enemyLaserShotHit[i] = new EnemyLaserShotHit(Util.loadImage("spaceart/png/laserRedShot.png"));
+		}
+		
+		heroShip = new HeroShip(normalShip, 10 + normalShip.getWidth() / 2, screenWidth - 10 - normalShip.getWidth() / 2);
+		heroShip.setPosX(screenWidth / 2);
+		heroShip.setPosY(screentHeight - 10);
+		
+		isTransition = false;
+	}
 
 	@Override
 	public String getName() {
@@ -196,10 +289,8 @@ public class ChickenInvaderFrame extends GameState {
 
 	@Override
 	public void handleMouseDown(int x, int y, GFMouseButton button) {
-		if (button == GFMouseButton.Left) {
-			TransitionType transType = TransitionType.LeftRightSquash;
-			Transition.transitionTo("mainFrame", transType, 1.0f);
-		}
+		// TODO Auto-generated method stub
+	
 	}
 
 	@Override
@@ -271,123 +362,125 @@ public class ChickenInvaderFrame extends GameState {
 	
 	@Override
 	public void render(Graphics2D g, int sw, int sh) {
-		if (heroShip.getHitDuration() > 0) {
-			Point2D center = new Point2D.Float(sw / 2, sh / 2);
-			float radius = (float)(Math.sqrt((sw - sw / 2) * (sw - sw / 2) + (sh - sh / 2) * (sh - sh / 2)));
-			float dist[] = new float[2];
-			if (heroShip.getHitDuration() > 45) {
-				dist[0] = ((float)0.5f * (heroShip.getHitDuration() - 46) / 46) + 0.7f;
-				if (dist[0] >= 1.0f) {
-					dist[0] = 0.99f;
-				}
-				dist[1] = 1.0f;
-			} else {
-				dist[0] = ((float)0.5f * (46 - heroShip.getHitDuration()) / 46) + 0.7f;
-				if (dist[0] >= 1.0f) {
-					dist[0] = 0.99f;
-				}
-				dist[1] = 1.0f;
-			}
-			Color[] colors = {backgroundColor, Color.RED};
-			RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
-			g.setPaint(p);
-		} else {
-			g.setPaint(backgroundColor);
-		}
-		
-		g.fillRect(0, 0, sw, sh);
-		
-		for (Star s : stars) {
-			g.drawImage(s.getImage(), s.getPosX(), s.getPosY(), null);
-		}
-		
-		AffineTransform transform = new AffineTransform();
-		
-		for (Meteor m : meteors) {
-			if (m.getCoolDown() == 0) {
-				transform.setToIdentity();
-				transform.translate(m.getPosX(), m.getPosY());
-				transform.rotate(m.getAngle());
-				transform.translate(-m.getImage().getWidth() / 2, -m.getImage().getHeight() / 2);
-				
-				g.drawImage(m.getImage(), transform, null);
-			}
-		}
-		
-		for (Meteor dm : destroyedMeteors) {
-			if (dm.getCoolDown() == 0) {
-				transform.setToIdentity();
-				transform.translate(dm.getPosX(), dm.getPosY());
-				transform.rotate(dm.getAngle());
-				transform.translate(-dm.getImage().getWidth() / 2, -dm.getImage().getHeight() / 2);
-				
-				g.drawImage(dm.getImage(), transform, null);
-			}
-		}
-		
-		for (EnemyShip enemy : enemyShips) {
-			if (!enemy.isDead()) {
-				if (enemy.getHitDuration() > 0) {
-					g.drawImage(ImageCollector.blurredEnemy[(enemy.getHitDuration() - 1) / 5], enemy.getPosX() - enemy.getImage().getWidth() / 2,
-							enemy.getPosY() + enemy.getImage().getHeight() / 2, null);
+		if (!isTransition) {
+			if (heroShip.getHitDuration() > 0) {
+				Point2D center = new Point2D.Float(sw / 2, sh / 2);
+				float radius = (float)(Math.sqrt((sw - sw / 2) * (sw - sw / 2) + (sh - sh / 2) * (sh - sh / 2)));
+				float dist[] = new float[2];
+				if (heroShip.getHitDuration() > 45) {
+					dist[0] = ((float)0.5f * (heroShip.getHitDuration() - 46) / 46) + 0.7f;
+					if (dist[0] >= 1.0f) {
+						dist[0] = 0.99f;
+					}
+					dist[1] = 1.0f;
 				} else {
-					g.drawImage(enemy.getImage(), enemy.getPosX() - enemy.getImage().getWidth() / 2,
-							enemy.getPosY() + enemy.getImage().getHeight() / 2, null);
+					dist[0] = ((float)0.5f * (46 - heroShip.getHitDuration()) / 46) + 0.7f;
+					if (dist[0] >= 1.0f) {
+						dist[0] = 0.99f;
+					}
+					dist[1] = 1.0f;
+				}
+				Color[] colors = {backgroundColor, Color.RED};
+				RadialGradientPaint p = new RadialGradientPaint(center, radius, dist, colors);
+				g.setPaint(p);
+			} else {
+				g.setPaint(backgroundColor);
+			}
+			
+			g.fillRect(0, 0, sw, sh);
+			
+			for (Star s : stars) {
+				g.drawImage(s.getImage(), s.getPosX(), s.getPosY(), null);
+			}
+			
+			AffineTransform transform = new AffineTransform();
+			
+			for (Meteor m : meteors) {
+				if (m.getCoolDown() == 0) {
+					transform.setToIdentity();
+					transform.translate(m.getPosX(), m.getPosY());
+					transform.rotate(m.getAngle());
+					transform.translate(-m.getImage().getWidth() / 2, -m.getImage().getHeight() / 2);
+					
+					g.drawImage(m.getImage(), transform, null);
 				}
 			}
-		}
-		
-		for (HeroLaserShot heroLaserShot : heroLaserShots) {
-			if (heroLaserShot.isRendered()) {
-				g.drawImage(heroLaserShot.getImage(), heroLaserShot.getPosX() - heroLaserShot.getImage().getWidth() / 2,
-						heroLaserShot.getPosY() - heroLaserShot.getImage().getHeight() / 2, null);
+			
+			for (Meteor dm : destroyedMeteors) {
+				if (dm.getCoolDown() == 0) {
+					transform.setToIdentity();
+					transform.translate(dm.getPosX(), dm.getPosY());
+					transform.rotate(dm.getAngle());
+					transform.translate(-dm.getImage().getWidth() / 2, -dm.getImage().getHeight() / 2);
+					
+					g.drawImage(dm.getImage(), transform, null);
+				}
 			}
-		}
-		
-		for (EnemyLaserShot enemyLaserShot : enemyLaserShots) {
-			if (enemyLaserShot.isRendered()) {
-				g.drawImage(enemyLaserShot.getImage(), enemyLaserShot.getPosX() - enemyLaserShot.getImage().getWidth() / 2,
-						enemyLaserShot.getPosY() - enemyLaserShot.getImage().getHeight() / 2, null);
+			
+			for (EnemyShip enemy : enemyShips) {
+				if (!enemy.isDead()) {
+					if (enemy.getHitDuration() > 0) {
+						g.drawImage(ImageCollector.blurredEnemy[(enemy.getHitDuration() - 1) / 5], enemy.getPosX() - enemy.getImage().getWidth() / 2,
+								enemy.getPosY() + enemy.getImage().getHeight() / 2, null);
+					} else {
+						g.drawImage(enemy.getImage(), enemy.getPosX() - enemy.getImage().getWidth() / 2,
+								enemy.getPosY() + enemy.getImage().getHeight() / 2, null);
+					}
+				}
 			}
-		}
-		
-		Composite prevComp = g.getComposite();
-		for (HeroLaserShotHit heroLaserShotHit : heroLaserShotHit) {
-			if (heroLaserShotHit.getLife() > 0) {
-				g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-						(float)heroLaserShotHit.getLife() / (float)heroLaserShotHit.getDuration()));
-				g.drawImage(heroLaserShotHit.getImage(), heroLaserShotHit.getPosX() - 
-						heroLaserShotHit.getImage().getWidth() / 2, heroLaserShotHit.getPosY() - 
-						heroLaserShotHit.getImage().getHeight() / 2, null);
+			
+			for (HeroLaserShot heroLaserShot : heroLaserShots) {
+				if (heroLaserShot.isRendered()) {
+					g.drawImage(heroLaserShot.getImage(), heroLaserShot.getPosX() - heroLaserShot.getImage().getWidth() / 2,
+							heroLaserShot.getPosY() - heroLaserShot.getImage().getHeight() / 2, null);
+				}
 			}
-		}
-		
-		g.setComposite(prevComp);
-		
-		if (heroShip.getHitDuration() > 0) {
-			if ((heroShip.getHitDuration() < 61 && heroShip.getHitDuration() >= 50) ||
-					(heroShip.getHitDuration() < 41 && heroShip.getHitDuration() >= 30) ||
-					(heroShip.getHitDuration() < 21 && heroShip.getHitDuration() >= 10) ||
-					(heroShip.getHitDuration() < 81 && heroShip.getHitDuration() >= 70)) {
+			
+			for (EnemyLaserShot enemyLaserShot : enemyLaserShots) {
+				if (enemyLaserShot.isRendered()) {
+					g.drawImage(enemyLaserShot.getImage(), enemyLaserShot.getPosX() - enemyLaserShot.getImage().getWidth() / 2,
+							enemyLaserShot.getPosY() - enemyLaserShot.getImage().getHeight() / 2, null);
+				}
+			}
+			
+			Composite prevComp = g.getComposite();
+			for (HeroLaserShotHit heroLaserShotHit : heroLaserShotHit) {
+				if (heroLaserShotHit.getLife() > 0) {
+					g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+							(float)heroLaserShotHit.getLife() / (float)heroLaserShotHit.getDuration()));
+					g.drawImage(heroLaserShotHit.getImage(), heroLaserShotHit.getPosX() - 
+							heroLaserShotHit.getImage().getWidth() / 2, heroLaserShotHit.getPosY() - 
+							heroLaserShotHit.getImage().getHeight() / 2, null);
+				}
+			}
+			
+			g.setComposite(prevComp);
+			
+			if (heroShip.getHitDuration() > 0) {
+				if ((heroShip.getHitDuration() < 61 && heroShip.getHitDuration() >= 50) ||
+						(heroShip.getHitDuration() < 41 && heroShip.getHitDuration() >= 30) ||
+						(heroShip.getHitDuration() < 21 && heroShip.getHitDuration() >= 10) ||
+						(heroShip.getHitDuration() < 81 && heroShip.getHitDuration() >= 70)) {
+					g.drawImage(heroShip.getImage(), heroShip.getPosX() - normalShip.getWidth() / 2,
+							heroShip.getPosY() - normalShip.getHeight(), null);
+				}
+			} else {
 				g.drawImage(heroShip.getImage(), heroShip.getPosX() - normalShip.getWidth() / 2,
 						heroShip.getPosY() - normalShip.getHeight(), null);
 			}
-		} else {
-			g.drawImage(heroShip.getImage(), heroShip.getPosX() - normalShip.getWidth() / 2,
-					heroShip.getPosY() - normalShip.getHeight(), null);
-		}
-		
-		for (EnemyLaserShotHit enemyLaserShotHit : enemyLaserShotHit) {
-			if (enemyLaserShotHit.getLife() > 0) {
-				g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-						(float)enemyLaserShotHit.getLife() / (float)enemyLaserShotHit.getDuration()));
-				g.drawImage(enemyLaserShotHit.getImage(), enemyLaserShotHit.getPosX() - 
-						enemyLaserShotHit.getImage().getWidth() / 2, enemyLaserShotHit.getPosY() - 
-						enemyLaserShotHit.getImage().getHeight() / 2, null);
+			
+			for (EnemyLaserShotHit enemyLaserShotHit : enemyLaserShotHit) {
+				if (enemyLaserShotHit.getLife() > 0) {
+					g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+							(float)enemyLaserShotHit.getLife() / (float)enemyLaserShotHit.getDuration()));
+					g.drawImage(enemyLaserShotHit.getImage(), enemyLaserShotHit.getPosX() - 
+							enemyLaserShotHit.getImage().getWidth() / 2, enemyLaserShotHit.getPosY() - 
+							enemyLaserShotHit.getImage().getHeight() / 2, null);
+				}
 			}
+			
+			g.setComposite(prevComp);
 		}
-		
-		g.setComposite(prevComp);
 		
 		if (heroShip.isDead()) {
 			renderGameOver(g, sw, sh);
@@ -408,6 +501,16 @@ public class ChickenInvaderFrame extends GameState {
 
 	@Override
 	public void update() {
+		if (finishedFizzle) {
+			if (gameOverTime > 0) {
+				gameOverTime--;
+			} else {
+				TransitionType transType = TransitionType.LeftRightSquash;
+				Transition.transitionTo("mainFrame", transType, 1.0f);
+				resetParameters();
+			}
+		}
+		
 		if (heroShip.isDead()) {
 			return;
 		}

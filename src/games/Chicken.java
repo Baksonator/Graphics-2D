@@ -6,7 +6,7 @@ public class Chicken extends GameObject {
 
 	public Chicken(int positionX, int positionY) {
 		super(positionX, positionY);
-		setImage(ImageCollector.chickenObject);
+		setImage(ImageCollector.getChickenObject());
 		setFrameName("chickenFrame");
 	}
 	
