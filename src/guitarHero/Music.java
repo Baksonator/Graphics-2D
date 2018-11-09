@@ -18,7 +18,6 @@ public class Music extends Applet{
 	public void playMusic() {
 		try {
 			audioClip = AudioSystem.getClip();
-			//URL soundURL = Music.class.getClassLoader().getResource("guitarHero/guitarHeroIntro.wav");
 			URL soundURL = Music.class.getClassLoader().getResource("guitarHero/Supersonic.wav");
 			audioClip.open(AudioSystem.getAudioInputStream(soundURL));
 			if (!audioClip.isActive()) {

@@ -282,7 +282,6 @@ public class MainFrame extends GameState {
 			if (game.isDrawGame()) {
 				game.wantsToPlay(heroj.getPositionX(), heroj.getPositionY(), mapa.getCamX(), mapa.getCamY());
 				if (game.isPlaying()) {
-//					host.setState(game.getFrameName());
 					TransitionType transType = TransitionType.LeftRightSquash;
 					Transition.transitionTo(game.getFrameName(), transType, 1.0f);
 					mapa.setCamX(0);

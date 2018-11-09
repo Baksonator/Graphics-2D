@@ -1,12 +1,12 @@
 package games;
 
-import rafgfxlib.Util;
+import imageGenerator.ImageCollector;
 
 public class Guitar extends GameObject {
 
 	public Guitar(int positionX, int positionY) {
 		super(positionX, positionY);
-		setImage(Util.loadImage("objects/guitar_red.jpg"));
+		setImage(ImageCollector.guitarObject);
 		setFrameName("GuitarHeroFrame");
 	}
 	

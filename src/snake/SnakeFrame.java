@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import imageGenerator.ImageCollector;
 import project.AnimatedEntity;
 import project.SpriteSheet;
+import project.Transition;
+import project.Transition.TransitionType;
 import rafgfxlib.GameHost;
 import rafgfxlib.GameHost.GFMouseButton;
 import rafgfxlib.GameState;
@@ -378,7 +380,8 @@ public class SnakeFrame extends GameState{
 	}
 	
 	public void returnToMainFrame() {
-		host.setState("mainFrame");
+		TransitionType transType = TransitionType.LeftRightSquash;
+		Transition.transitionTo("mainFrame", transType, 1.0f);
 		setEverythingBack();
 	}
 	

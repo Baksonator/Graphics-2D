@@ -31,6 +31,15 @@ public class ImageCollector {
 	public static BufferedImage presentation;
 	public static BufferedImage snake;
 	public static BufferedImage blurredEnemy[];
+	public static BufferedImage chickenObject;
+	public static BufferedImage guitarObject;
+	public static BufferedImage snakeObject;
+	public static BufferedImage greenApple;
+	public static BufferedImage greenSmallApple;
+	public static BufferedImage redSmallApple;
+	public static BufferedImage yellowSmallApple;
+	public static BufferedImage numbersSet[];
+	public static BufferedImage score;
 	
 	public ImageCollector() {
 		heroSingle = new BufferedImage[16];
@@ -130,13 +139,82 @@ public class ImageCollector {
 		
 		presentation = ImageGenerator.joinBufferedImageArrayVerticalCentered(helpArray);
 		
-		snake = ImageGenerator.joinLetterImages("Snake", charSet, emptyChar);
+		snake = ImageGenerator.joinLetterImages("SNAKE", charSet, emptyChar);
 		
 		blurredEnemy = new BufferedImage[20];
 		
 		for (int i = 0; i < blurredEnemy.length; i++) {
 			blurredEnemy[i] = ImageGenerator.blurImage(Util.loadImage("spaceart/png/enemyShip.png"), i + 1);
 		}
+		
+		chickenObject = Util.loadImage("spaceart/png/player.png");
+		guitarObject = Util.loadImage("objects/guitar_red.jpg");
+		snakeObject = Util.loadImage("objects/snake.jpg");
+		
+		greenApple = Util.loadImage("tileset/green_apple.jpg");
+		
+		WritableRaster source = greenApple.getRaster();
+		WritableRaster target = Util.createRaster(source.getWidth(), source.getHeight(), false);
+		
+		for (int y = 0; y < source.getHeight(); y++) {
+			for (int x = 0; x < source.getWidth(); x++) {
+				source.getPixel(x, y, rgb);
+				if (rgb[0] >= 250 && rgb[1] >= 250 && rgb[2] >= 250) {
+					rgb[0] = 0;
+					rgb[1] = 0;
+					rgb[2] = 0;
+				}
+				target.setPixel(x, y, rgb);
+			}
+		}
+		greenApple =  Util.rasterToImage(target);
+		greenApple = ImageGenerator.scaleImage(greenApple, 30, 30);
+		
+		greenSmallApple = makeSmallApples(Util.loadImage("objects/green_small_apple.png"));
+		redSmallApple = makeSmallApples(Util.loadImage("objects/red_small_apple.png"));
+		yellowSmallApple = makeSmallApples(Util.loadImage("objects/yellow_small_apple.png"));
+		
+		
+		numbersSet = new BufferedImage[12];
+		int count = 0;
+		for (int j = 0; j <= 24; j += 8) {
+			for (int i = 27; i < 30; i++) {
+				BufferedImage isecena = ImageGenerator.cutTile(i * 8, j, 8, 8, Util.loadImage("tileset/font.png"));
+				//BufferedImage skalirana = ImageGenerator.scaleImageJava(isecena, 64, 64); 
+				
+//				File outputFile = new File("tileset/nset/" + count + ".png");
+//				
+//				try {
+//					ImageIO.write(skalirana, "png", outputFile);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+				numbersSet[count++] = ImageGenerator.scaleImageJava(isecena, 64, 64);
+			}
+		}
+		
+		score = ImageGenerator.joinLetterImages("score", charSet, emptyChar);
+	}
+	
+	public static BufferedImage makeSmallApples(BufferedImage image) {
+		image = ImageGenerator.scaleImage(image, 30, 30);
+		WritableRaster source = image.getRaster();
+		WritableRaster target = Util.createRaster(source.getWidth(), source.getHeight(), false);
+		
+		int[] rgb = {0, 0, 0};
+		for (int y = 0; y < source.getHeight(); y++) {
+			for (int x = 0; x < source.getWidth(); x++) {
+				source.getPixel(x, y, rgb);
+				if (rgb[0] >= 240 && rgb[1] >= 240 && rgb[2] >= 240) {
+					rgb[0] = 0;
+					rgb[1] = 0;
+					rgb[2] = 0;
+				}
+				target.setPixel(x, y, rgb);
+			}
+		}
+		
+		return Util.rasterToImage(target);
 	}
 
 	public static BufferedImage[] getHeroSingle() {

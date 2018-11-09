@@ -1,11 +1,9 @@
 package snake;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.util.Random;
-
+import imageGenerator.ImageCollector;
 import imageGenerator.ImageGenerator;
-import rafgfxlib.Util;
 
 public class SmallApple {
 	
@@ -31,18 +29,16 @@ public class SmallApple {
 		
 		switch (random) {
 		case 0:
-			smallApple = Util.loadImage("objects/green_small_apple.png");
-			//smallApple = Util.loadImage("objects/blue_dark_apple.jpg");
+			smallApple = ImageCollector.greenSmallApple;
 			break;
 		case 1:
-			smallApple = Util.loadImage("objects/red_small_apple.png");		
-			//smallApple = Util.loadImage("objects/red_dark_apple.jpg");		
+			smallApple = ImageCollector.redSmallApple;
 			break;
 		case 2:
-			smallApple = Util.loadImage("objects/yellow_small_apple.png");
+			smallApple = ImageCollector.yellowSmallApple;
 			break;
 		default:
-			smallApple = Util.loadImage("objects/green_small_apple.jpg");
+			smallApple = ImageCollector.greenSmallApple;
 			break;
 		}
 		
@@ -64,24 +60,8 @@ public class SmallApple {
 ////        }
 //        g2.dispose();
 //        return newImage;
-//		
-		WritableRaster source = smallApple.getRaster();
-		WritableRaster target = Util.createRaster(source.getWidth(), source.getHeight(), false);
 		
-		int[] rgb = {0, 0, 0};
-		for (int y = 0; y < source.getHeight(); y++) {
-			for (int x = 0; x < source.getWidth(); x++) {
-				source.getPixel(x, y, rgb);
-				if (rgb[0] >= 240 && rgb[1] >= 240 && rgb[2] >= 240) {
-					rgb[0] = 0;
-					rgb[1] = 0;
-					rgb[2] = 0;
-				}
-				target.setPixel(x, y, rgb);
-			}
-		}
-		
-		return Util.rasterToImage(target);
+		return smallApple;
 	}
 	
 	public void updateSmallApple() {

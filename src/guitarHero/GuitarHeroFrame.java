@@ -6,11 +6,12 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
-
 import imageGenerator.ImageCollector;
 import imageGenerator.ImageGenerator;
 import project.AnimatedEntity;
 import project.SpriteSheet;
+import project.Transition;
+import project.Transition.TransitionType;
 import rafgfxlib.GameHost;
 import rafgfxlib.GameHost.GFMouseButton;
 import rafgfxlib.GameState;
@@ -210,7 +211,8 @@ public class GuitarHeroFrame extends GameState {
 	}
 	
 	public void returnToMainFrame() {
-		host.setState("mainFrame");
+		TransitionType transType = TransitionType.LeftRightSquash;
+		Transition.transitionTo("mainFrame", transType, 1.0f);
 		setEverythingBack();
 	}
 

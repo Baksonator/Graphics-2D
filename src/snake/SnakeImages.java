@@ -2,9 +2,7 @@ package snake;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
+import imageGenerator.ImageCollector;
 import rafgfxlib.Util;
 
 public class SnakeImages {
@@ -15,9 +13,8 @@ public class SnakeImages {
 	private BufferedImage endImage;
 	
 	public SnakeImages() {
-		introImage = Util.loadImage("tileset/fontset/SNAKE.png");
-		endImage = Util.loadImage("tileset/fontset/Gameover.png");
-		saveImages();
+		introImage = ImageCollector.snake;
+		endImage = ImageCollector.gameOver;
 	}
 	
 	public BufferedImage createBackgroundImage(int width, int height) {
@@ -31,19 +28,6 @@ public class SnakeImages {
 		}
 		
 		return Util.rasterToImage(raster);
-	}
-	
-	public void saveImage(String imagePath, BufferedImage image) {
-		File outputFile = new File(imagePath);
-			try {
-				ImageIO.write(image, "png", outputFile);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-	}
-	
-	public void saveImages() {
-		saveImage("tileset/fontset/SNAKE.png", introImage);
 	}
 
 	public BufferedImage getIntroImage() {

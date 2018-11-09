@@ -1,12 +1,12 @@
 package games;
 
-import rafgfxlib.Util;
+import imageGenerator.ImageCollector;
 
 public class Snake extends GameObject {
 
 	public Snake(int positionX, int positionY) {
 		super(positionX, positionY);
-		setImage(Util.loadImage("objects/snake.jpg"));
+		setImage(ImageCollector.snakeObject);
 		setFrameName("SnakeFrame");
 	}
 	
