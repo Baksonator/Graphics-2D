@@ -2,8 +2,6 @@ package games;
 
 import java.awt.image.BufferedImage;
 
-import imageGenerator.ImageGenerator;
-
 public class GameObject {
 	
 	private int positionX;
@@ -58,7 +56,6 @@ public class GameObject {
 	}
 
 	public void setImage(BufferedImage image) {
-		image = ImageGenerator.scaleImage(image, 100, 100);
 		this.image = image;
 	}
 

@@ -3,11 +3,7 @@ package imageGenerator;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.io.File;
-import java.io.IOException;
 import java.util.Random;
-
-import javax.imageio.ImageIO;
 
 import rafgfxlib.Util;
 
@@ -120,14 +116,6 @@ public class ImageCollector {
 		
 		gameOver = ImageGenerator.joinLetterImages("Game over", charSet, emptyChar);
 		
-		File outputFile = new File("tileset/fontset/bleja.png");
-		
-		try {
-			ImageIO.write(gameOver, "png", outputFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
 		guitarHero = ImageGenerator.joinLetterImages("Guitar Hero", charSet, emptyChar);
 		
 		BufferedImage teamBANTer = ImageGenerator.joinLetterImages("Team BANTer", charSet, emptyChar);
@@ -147,32 +135,14 @@ public class ImageCollector {
 			blurredEnemy[i] = ImageGenerator.blurImage(Util.loadImage("spaceart/png/enemyShip.png"), i + 1);
 		}
 		
-		chickenObject = Util.loadImage("spaceart/png/player.png");
-		guitarObject = Util.loadImage("objects/guitar_red.png");
-		snakeObject = Util.loadImage("objects/snake.png");
+		chickenObject = ImageGenerator.scaleImageJava(Util.loadImage("spaceart/png/player.png"), 100, 100);
+		guitarObject = ImageGenerator.scaleImageJava(Util.loadImage("objects/guitar.png"), 100, 100);
+		snakeObject = ImageGenerator.scaleImageJava(Util.loadImage("objects/snake.png"), 100, 100);
 		
-		greenApple = Util.loadImage("tileset/green_apple.jpg");
-		
-		WritableRaster source = greenApple.getRaster();
-		WritableRaster target = Util.createRaster(source.getWidth(), source.getHeight(), false);
-		
-		for (int y = 0; y < source.getHeight(); y++) {
-			for (int x = 0; x < source.getWidth(); x++) {
-				source.getPixel(x, y, rgb);
-				if (rgb[0] >= 250 && rgb[1] >= 250 && rgb[2] >= 250) {
-					rgb[0] = 0;
-					rgb[1] = 0;
-					rgb[2] = 0;
-				}
-				target.setPixel(x, y, rgb);
-			}
-		}
-		greenApple =  Util.rasterToImage(target);
-		greenApple = ImageGenerator.scaleImage(greenApple, 30, 30);
-		
-		greenSmallApple = makeSmallApples(Util.loadImage("objects/green_small_apple.png"));
-		redSmallApple = makeSmallApples(Util.loadImage("objects/red_small_apple.png"));
-		yellowSmallApple = makeSmallApples(Util.loadImage("objects/yellow_small_apple.png"));
+		greenApple = ImageGenerator.scaleImageJava(Util.loadImage("objects/green_apple.png"), 40, 40);
+		greenSmallApple = ImageGenerator.scaleImageJava(Util.loadImage("objects/green_apple.png"), 30, 30);
+		redSmallApple = ImageGenerator.scaleImageJava(Util.loadImage("objects/red_small_apple.png"), 30, 30);
+		yellowSmallApple = ImageGenerator.scaleImageJava(Util.loadImage("objects/green_apple.png"), 30, 30);
 		
 		
 		numbersSet = new BufferedImage[12];
@@ -185,27 +155,6 @@ public class ImageCollector {
 		}
 		
 		score = ImageGenerator.joinLetterImages("score", charSet, emptyChar);
-	}
-	
-	public static BufferedImage makeSmallApples(BufferedImage image) {
-		image = ImageGenerator.scaleImage(image, 30, 30);
-		WritableRaster source = image.getRaster();
-		WritableRaster target = Util.createRaster(source.getWidth(), source.getHeight(), false);
-		
-		int[] rgb = {0, 0, 0};
-		for (int y = 0; y < source.getHeight(); y++) {
-			for (int x = 0; x < source.getWidth(); x++) {
-				source.getPixel(x, y, rgb);
-				if (rgb[0] >= 240 && rgb[1] >= 240 && rgb[2] >= 240) {
-					rgb[0] = 0;
-					rgb[1] = 0;
-					rgb[2] = 0;
-				}
-				target.setPixel(x, y, rgb);
-			}
-		}
-		
-		return Util.rasterToImage(target);
 	}
 
 	public static BufferedImage[] getHeroSingle() {
@@ -278,6 +227,42 @@ public class ImageCollector {
 
 	public static BufferedImage[] getBlurredEnemy() {
 		return blurredEnemy;
+	}
+
+	public static BufferedImage getChickenObject() {
+		return chickenObject;
+	}
+
+	public static BufferedImage getGuitarObject() {
+		return guitarObject;
+	}
+
+	public static BufferedImage getSnakeObject() {
+		return snakeObject;
+	}
+
+	public static BufferedImage getGreenApple() {
+		return greenApple;
+	}
+
+	public static BufferedImage getGreenSmallApple() {
+		return greenSmallApple;
+	}
+
+	public static BufferedImage getRedSmallApple() {
+		return redSmallApple;
+	}
+
+	public static BufferedImage getYellowSmallApple() {
+		return yellowSmallApple;
+	}
+
+	public static BufferedImage[] getNumbersSet() {
+		return numbersSet;
+	}
+
+	public static BufferedImage getScore() {
+		return score;
 	}
 	
 }
