@@ -148,8 +148,8 @@ public class ImageCollector {
 		}
 		
 		chickenObject = Util.loadImage("spaceart/png/player.png");
-		guitarObject = Util.loadImage("objects/guitar_red.jpg");
-		snakeObject = Util.loadImage("objects/snake.jpg");
+		guitarObject = Util.loadImage("objects/guitar_red.png");
+		snakeObject = Util.loadImage("objects/snake.png");
 		
 		greenApple = Util.loadImage("tileset/green_apple.jpg");
 		
@@ -180,15 +180,6 @@ public class ImageCollector {
 		for (int j = 0; j <= 24; j += 8) {
 			for (int i = 27; i < 30; i++) {
 				BufferedImage isecena = ImageGenerator.cutTile(i * 8, j, 8, 8, Util.loadImage("tileset/font.png"));
-				//BufferedImage skalirana = ImageGenerator.scaleImageJava(isecena, 64, 64); 
-				
-//				File outputFile = new File("tileset/nset/" + count + ".png");
-//				
-//				try {
-//					ImageIO.write(skalirana, "png", outputFile);
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
 				numbersSet[count++] = ImageGenerator.scaleImageJava(isecena, 64, 64);
 			}
 		}
