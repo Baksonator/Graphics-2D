@@ -42,7 +42,7 @@ public class ImageCollector {
 	public static BufferedImage wall;
 	public static BufferedImage jumperR;
 	public static BufferedImage jumperL;
-	public static BufferedImage fence;
+	public static BufferedImage bats;
 
 	public ImageCollector() {
 		heroSingle = new BufferedImage[16];
@@ -169,13 +169,15 @@ public class ImageCollector {
 		jumperR = ImageGenerator.scaleImageJava(jumperR, 64 * 14, 63 * 3);
 		jumperL = ImageGenerator.mirrorFlip(jumperR);
 		//
-		fence = ImageGenerator.scaleImage(Util.loadImage("twrRes/fence.png"), 640, 32);
-		fence = ImageGenerator.setTransparentBackground(fence);
 
 	}
 
+	public static BufferedImage getBats() {
+		return bats;
+	}
+
 	public static BufferedImage getFence() {
-		return fence;
+		return bats;
 	}
 
 	public static BufferedImage getJumperR() {

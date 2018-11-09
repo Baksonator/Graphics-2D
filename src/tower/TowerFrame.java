@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Random;
 
 import imageGenerator.ImageCollector;
 import project.SpriteSheet;
@@ -34,7 +36,7 @@ public class TowerFrame extends GameState {
 	private int animFrame = 0;
 
 	private Tile tile1, tile2;
-	private SpriteSheet sheet, charSheetR, charSheetL;
+	private SpriteSheet sheet, charSheetR, charSheetL, sheet2;
 
 	boolean jump = false;
 	boolean fall = false;
@@ -46,15 +48,22 @@ public class TowerFrame extends GameState {
 	private int grav = -35;
 
 	private int gameOverTime = 61 * 30;
+	private ArrayList<Bat> bats = new ArrayList<>();
 
 	public TowerFrame(GameHost host) {
 		super(host);
 		tile1 = new Tile(ImageCollector.getBackgroundTile(), 1, TILE_H);
 		sheet = new SpriteSheet(Util.loadImage("twrRes/wallProba.png"), 1, 16);
+		sheet2 = new SpriteSheet(Util.loadImage("twrRes/bat.png"), 6, 1);
 		tile2 = new Tile(ImageCollector.getFence(), 1, TILE_H);
 
 		charSheetL = new SpriteSheet(ImageCollector.getJumperL(), 14, 3);
 		charSheetR = new SpriteSheet(ImageCollector.getJumperR(), 14, 3);
+
+		for (int i = 0; i < 8; i++) {
+			Bat bat = new Bat(host.getWidth(), host.getHeight(), 61 * 5);
+			bats.add(bat);
+		}
 	}
 
 	@Override
@@ -184,6 +193,11 @@ public class TowerFrame extends GameState {
 		g.fillRect((sw - TILE_W2) / 2, sh / 2 + 74 - camY, 640, 10);
 		g.setColor(Color.BLACK);
 		g.fillRect((sw - TILE_W2) / 2, sh / 2 + 84 - camY, 640, 10);
+
+		Random r = new Random();
+		for (Bat b : bats) {
+			sheet2.drawTo(g, b.getX(), b.getY(), b.getFrame(), 0);
+		}
 	}
 
 	@Override
@@ -200,9 +214,12 @@ public class TowerFrame extends GameState {
 
 	@Override
 	public void update() {
+		for (Bat b : bats) {
+			b.move();
+		}
 
 		if (gameOverTime > 0) {
-			// gameOverTime--;
+			gameOverTime--;
 		} else {
 			TransitionType transType = TransitionType.LeftRightSquash;
 			Transition.transitionTo("mainFrame", transType, 1.0f);
